@@ -1,0 +1,84 @@
+---
+interface Props { lang: 'en' | 'es' | 'it'; alternates: Partial<Record<'en' | 'es' | 'it', string>>; }
+const { lang, alternates } = Astro.props;
+const nav = [
+  { href: '/services/', label: 'Lessons' },
+  { href: '/about/', label: 'About María' },
+  { href: '/reviews/', label: 'Reviews' },
+];
+const langLinks = [
+  { code: 'en', label: 'English', href: alternates.en ?? '/' },
+  { code: 'es', label: 'Español', href: alternates.es ?? '/es/' },
+  { code: 'it', label: 'Italiano', href: alternates.it ?? '/it/' },
+];
+const path = Astro.url.pathname;
+---
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="logo" href="/" aria-label="Spanish with María, home">
+      <span class="logo-mark" aria-hidden="true">M</span>
+      <span class="logo-text">Spanish <em>with</em> María</span>
+    </a>
+
+    <nav class="desk-nav" aria-label="Main">
+      {nav.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
+    </nav>
+
+    <div class="right">
+      <details class="lang">
+        <summary aria-label="Change language"><span>{lang.toUpperCase()}</span></summary>
+        <ul>
+          {langLinks.map((l) => (
+            <li><a href={l.href} hreflang={l.code} lang={l.code} aria-current={l.code === lang ? 'true' : undefined}>{l.label}</a></li>
+          ))}
+        </ul>
+      </details>
+      <a class="btn btn--primary desk-cta" href="/free-trial/">Free 20-min trial</a>
+      <details class="menu">
+        <summary aria-label="Open menu">
+          <span class="burger" aria-hidden="true"><i></i><i></i></span>
+        </summary>
+        <nav aria-label="Mobile">
+          {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+          <a class="btn btn--primary" href="/free-trial/">Book a free 20-min trial</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.92); backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid var(--mist-2); }
+  .bar { display: flex; align-items: center; justify-content: space-between; min-height: 64px; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--teal-deep); }
+  .logo-mark {
+    display: grid; place-items: center; width: 36px; height: 40px; border-radius: 999px 999px 8px 8px;
+    background: var(--teal); color: var(--white); font: 600 1.15rem/1 var(--serif); padding-top: 4px;
+  }
+  .logo-text { font: 600 1.15rem/1 var(--serif); font-variation-settings: 'SOFT' 100; letter-spacing: -.01em; }
+  .logo-text em { font-style: italic; font-weight: 400; color: var(--red); }
+  .desk-nav { display: none; gap: 30px; }
+  .desk-nav a { color: var(--ink); text-decoration: none; font-weight: 500; }
+  .desk-nav a:hover, .desk-nav a[aria-current] { color: var(--teal); text-decoration: underline; text-decoration-color: var(--saffron); text-decoration-thickness: 3px; }
+  .right { display: flex; align-items: center; gap: 8px; }
+  .desk-cta { display: none; min-height: 44px; padding: 0 20px; }
+  summary { list-style: none; cursor: pointer; }
+  summary::-webkit-details-marker { display: none; }
+  .lang { position: relative; }
+  .lang summary { display: grid; place-items: center; min-width: 44px; height: 44px; border-radius: 999px; font-weight: 600; font-size: .9rem; color: var(--teal); border: 1.5px solid var(--mist-2); }
+  .lang ul { position: absolute; right: 0; top: 52px; list-style: none; padding: 8px; background: var(--white); border-radius: 14px; box-shadow: var(--shadow); min-width: 150px; }
+  .lang a { display: block; padding: 10px 12px; border-radius: 8px; text-decoration: none; color: var(--ink); }
+  .lang a:hover, .lang a[aria-current] { background: var(--mist); }
+  .menu summary { display: grid; place-items: center; width: 44px; height: 44px; }
+  .burger { display: grid; gap: 6px; width: 22px; }
+  .burger i { display: block; height: 2px; background: var(--teal-deep); border-radius: 2px; transition: transform .2s; }
+  .menu[open] .burger i:first-child { transform: translateY(4px) rotate(45deg); }
+  .menu[open] .burger i:last-child { transform: translateY(-4px) rotate(-45deg); }
+  .menu nav { position: fixed; left: 0; right: 0; top: 64px; background: var(--white); padding: 12px var(--gutter) 28px; display: grid; gap: 4px; border-bottom: 1px solid var(--mist-2); box-shadow: 0 30px 40px -30px rgba(0,0,0,.25); }
+  .menu nav a:not(.btn) { padding: 14px 4px; font: 600 1.4rem/1.2 var(--serif); color: var(--teal-deep); text-decoration: none; border-bottom: 1px solid var(--mist); }
+  .menu nav .btn { margin-top: 16px; }
+  @media (min-width: 900px) {
+    .desk-nav, .desk-cta { display: flex; }
+    .menu { display: none; }
+  }
+</style>

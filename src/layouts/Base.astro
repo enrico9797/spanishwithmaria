@@ -1,0 +1,77 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileBar from '../components/MobileBar.astro';
+import { site } from '../data/site.js';
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: 'en' | 'es' | 'it';
+  /** Equivalent pages in other languages, e.g. { es: '/es/', it: '/it/' } */
+  alternates?: Partial<Record<'en' | 'es' | 'it', string>>;
+  schema?: object[];
+  ogImage?: string;
+}
+const { title, description, lang = 'en', alternates = {}, schema = [], ogImage = '/og-default.jpg' } = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const langs = { en: 'en', es: 'es', it: 'it' } as const;
+const alt = { [lang]: Astro.url.pathname, ...alternates };
+---
+<!doctype html>
+<html lang={lang}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {Object.entries(alt).map(([l, path]) => (
+    <link rel="alternate" hreflang={langs[l as keyof typeof langs]} href={new URL(path!, site.url).href} />
+  ))}
+  {alt.en && <link rel="alternate" hreflang="x-default" href={new URL(alt.en, site.url).href} />}
+  <meta name="theme-color" content="#0f4c5c" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={site.name} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={new URL(ogImage, site.url).href} />
+  <meta property="og:locale" content={lang === 'en' ? 'en_GB' : lang === 'es' ? 'es_ES' : 'it_IT'} />
+  <meta name="twitter:card" content="summary_large_image" />
+  {schema.length > 0 && (
+    <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': schema })} />
+  )}
+  <script is:inline>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <Header lang={lang} alternates={alt} />
+  <main id="main">
+    <slot />
+  </main>
+  <Footer />
+  <MobileBar />
+  <script>
+    // One IntersectionObserver for gentle scroll reveals
+    const els = document.querySelectorAll('[data-reveal]');
+    if ('IntersectionObserver' in window && els.length) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+      }, { rootMargin: '0px 0px -10% 0px' });
+      els.forEach((el) => io.observe(el));
+    } else {
+      els.forEach((el) => el.classList.add('is-in'));
+    }
+  </script>
+  <style>
+    .skip { position: absolute; left: -999px; top: 8px; background: var(--white); padding: 10px 16px; border-radius: 8px; z-index: 100; }
+    .skip:focus { left: 8px; }
+    body { padding-bottom: 76px; background: var(--teal-deep); }
+    main { background: var(--white); }
+    @media (min-width: 900px) { body { padding-bottom: 0; } }
+  </style>
+</body>
+</html>

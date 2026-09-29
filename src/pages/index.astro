@@ -1,0 +1,288 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Reviews from '../components/Reviews.astro';
+import { site, services, packNote } from '../data/site.js';
+import { photos, alts } from '../data/photos.js';
+
+const faqs = [
+  {
+    q: 'What happens in the free 20-minute trial?',
+    a: 'It is a relaxed video call. María asks a few questions to find your level, you talk about what you want to achieve, and she suggests how your lessons could look. There is no payment and no obligation to continue.',
+  },
+  {
+    q: 'I am a complete beginner. Is that OK?',
+    a: 'Absolutely. María teaches from your very first words, slowly and patiently, and can explain in English or Italian when something needs clarifying.',
+  },
+  {
+    q: 'Which Spanish do you teach, Latin American or Spain?',
+    a: 'María is from Peru and speaks clear, neutral Latin American Spanish. You will be understood everywhere, from Madrid to Mexico City, and she will point out the differences with Spain when they matter.',
+  },
+  {
+    q: 'Do you teach children?',
+    a: 'Yes. María taught Spanish to the children in the families she worked with for many years, and raised her own two children fully bilingual. Lessons for children are playful and short enough to keep them engaged.',
+  },
+  {
+    q: 'How do online lessons work?',
+    a: 'Lessons happen over video call. All you need is a laptop, tablet or phone with a camera and a quiet spot. María shares materials on screen and sends notes after each lesson.',
+  },
+];
+
+const schema = [
+  {
+    '@type': 'ProfessionalService',
+    '@id': `${site.url}/#business`,
+    name: site.name,
+    url: `${site.url}/`,
+    email: site.email,
+    telephone: site.phone,
+    image: `${site.url}/og-default.jpg`,
+    description: 'One-to-one Spanish lessons online and in person in London with María, a native Spanish speaker from Peru.',
+    areaServed: [{ '@type': 'City', name: 'London' }, { '@type': 'Place', name: 'Worldwide (online)' }],
+    availableLanguage: ['Spanish', 'English', 'Italian'],
+    priceRange: '£22–£40',
+    founder: { '@id': `${site.url}/#maria` },
+    makesOffer: services.map((s) => ({
+      '@type': 'Offer',
+      price: s.price.replace('£', ''),
+      priceCurrency: 'GBP',
+      itemOffered: { '@type': 'Service', name: s.title, url: `${site.url}/services/${s.slug}/` },
+    })),
+  },
+  {
+    '@type': 'Person',
+    '@id': `${site.url}/#maria`,
+    name: site.teacher,
+    alternateName: 'María',
+    jobTitle: 'Spanish tutor',
+    knowsLanguage: ['es', 'it', 'en'],
+    nationality: { '@type': 'Country', name: 'Peru' },
+    worksFor: { '@id': `${site.url}/#business` },
+  },
+  { '@type': 'WebSite', '@id': `${site.url}/#website`, url: `${site.url}/`, name: site.name, inLanguage: 'en' },
+  {
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+];
+---
+<Base
+  title="Spanish Lessons Online & in London with María | Free 20-min Trial"
+  description="Friendly one-to-one Spanish lessons with María, a native speaker from Peru. Conversation, grammar and lessons for children, online or in London. Book a free 20-minute trial."
+  alternates={{ en: '/', es: '/es/', it: '/it/' }}
+  schema={schema}
+>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-media">
+        <div class="arch">
+          <Picture src={photos.heroDesk} alt={alts.heroDesk} widths={[420, 640, 900]} sizes="(min-width: 900px) 460px, 88vw" formats={['avif', 'webp']} loading="eager" fetchpriority="high" />
+        </div>
+        <p class="bubble" lang="es">¡Hola! Soy María.</p>
+      </div>
+      <div class="hero-copy">
+        <h1>Learn Spanish with <span class="pen">María<svg viewBox="0 0 220 24" preserveAspectRatio="none" aria-hidden="true"><path d="M3 15 C 40 5, 80 21, 118 11 S 190 6, 217 13" /></svg></span></h1>
+        <p class="lead">Friendly one-to-one lessons with a native speaker from Peru. Online from anywhere, or in person in London. For adults and children, from first words to confident conversation.</p>
+        <div class="ctas">
+          <a class="btn btn--primary" href="/free-trial/">Book a free 20-min trial</a>
+          <a class="btn btn--ghost" href="#lessons">Lessons & prices</a>
+        </div>
+        <ul class="facts">
+          <li><strong>Native Spanish</strong> from Peru</li>
+          <li><strong>Adults & children</strong> all levels</li>
+          <li><strong>Online</strong> or in London</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- LESSONS -->
+  <section class="section" id="lessons" aria-labelledby="lessons-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="lessons-h">Ways to learn with María</h2>
+        <p>Every lesson is one-to-one and shaped around you: your level, your goals and the time you have.</p>
+      </div>
+    </div>
+    <div class="shelf" tabindex="0" aria-label="Lesson types, scroll sideways for more">
+      {services.map((s) => (
+        <a class="lesson" href={`/services/${s.slug}/`} data-reveal>
+          <Picture src={photos[s.photo]} alt={alts[s.photo]} widths={[360, 560]} sizes="(min-width: 900px) 360px, 78vw" formats={['avif', 'webp']} />
+          <div class="lesson-body">
+            <h3>{s.title}</h3>
+            <p>{s.short}</p>
+            <p class="price"><strong>{s.price}</strong> {s.unit}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+    <div class="wrap"><p class="pack">{packNote} <a href="/services/">Compare all lessons</a></p></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section section--mist" aria-labelledby="about-h">
+    <div class="wrap about">
+      <div class="about-photos" data-reveal>
+        <div class="arch arch--small">
+          <Picture src={photos.realWindow} alt={alts.realWindow} widths={[360, 560]} sizes="(min-width: 900px) 380px, 70vw" formats={['avif', 'webp']} />
+        </div>
+        <figure class="polaroid p1"><Picture src={photos.peru} alt={alts.peru} widths={[240, 360]} sizes="180px" formats={['avif', 'webp']} /><figcaption>Peruvian roots</figcaption></figure>
+        <figure class="polaroid p2"><Picture src={photos.rome} alt={alts.rome} widths={[240, 360]} sizes="180px" formats={['avif', 'webp']} /><figcaption>35 years in Rome</figcaption></figure>
+      </div>
+      <div class="about-copy">
+        <h2 id="about-h">Hola, I’m María</h2>
+        <p>I was born in Peru, and Spanish is the language I grew up with. For more than 35 years I lived in Rome, where I raised my two children to speak, read and write Spanish fluently, homework and all.</p>
+        <p>As a nanny, I taught Spanish to the children of the families I worked with, and today I help adults find the confidence to finally speak. Now I am moving to London to be close to my children, and I would love to help you learn.</p>
+        <p class="sig" lang="es">— María</p>
+        <a class="btn btn--ghost" href="/about/">Read María’s story</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" aria-labelledby="how-h">
+    <div class="wrap">
+      <div class="section-head"><h2 id="how-h">How it works</h2></div>
+      <ol class="steps">
+        <li data-reveal><span class="n">1</span><h3>Book a free trial</h3><p>Pick a time for a relaxed 20-minute video call. No payment, no commitment.</p></li>
+        <li data-reveal><span class="n">2</span><h3>Find your level</h3><p>María listens, asks a few questions and suggests a plan that fits your goals.</p></li>
+        <li data-reveal><span class="n">3</span><h3>Start speaking</h3><p>Weekly lessons online or in London, at your pace, with notes after every class.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <Reviews />
+
+  <!-- FAQ -->
+  <section class="section" aria-labelledby="faq-h">
+    <div class="wrap faq-wrap">
+      <h2 id="faq-h">Questions, answered</h2>
+      <div class="faq">
+        {faqs.map((f) => (
+          <details><summary>{f.q}</summary><p>{f.a}</p></details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="cta-band" aria-labelledby="cta-h">
+    <div class="wrap cta-grid">
+      <div class="arch arch--cta">
+        <Picture src={photos.portrait} alt="María smiling" widths={[300, 480]} sizes="240px" formats={['avif', 'webp']} />
+      </div>
+      <div>
+        <h2 id="cta-h">Your first 20 minutes are on María</h2>
+        <p>Say hello, find your level and see if you enjoy learning together. If you do, lessons start from £22.</p>
+        <div class="ctas">
+          <a class="btn btn--light" href="/free-trial/">Book your free trial</a>
+          <a class="link-light" href={site.whatsapp} rel="noopener">or message on WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* HERO */
+  .hero { padding: 20px 0 clamp(48px, 7vw, 96px); background: linear-gradient(180deg, var(--mist) 0%, var(--mist) 58%, var(--white) 58%); }
+  .hero-grid { display: grid; gap: 28px; }
+  .hero-media { position: relative; width: min(100%, 440px); margin-inline: auto; }
+  .arch { border-radius: var(--arch); overflow: hidden; border: 8px solid var(--white); box-shadow: var(--shadow); background: var(--mist-2); }
+  .arch :global(picture) { display: block; height: 100%; }
+  .arch :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .hero-media .arch { aspect-ratio: 4 / 4.3; }
+  .hero-media .arch :global(img) { object-position: 64% 30%; }
+  .bubble {
+    position: absolute; left: -4px; bottom: 34px; background: var(--white); color: var(--teal-deep);
+    font: 600 1.1rem/1 var(--serif); padding: 14px 18px; border-radius: 18px 18px 18px 4px; box-shadow: var(--shadow);
+  }
+  .hero-copy { display: grid; gap: 20px; }
+  .pen { position: relative; white-space: nowrap; }
+  .pen svg { position: absolute; left: -2%; bottom: -0.12em; width: 104%; height: 0.32em; overflow: visible; }
+  .pen path { fill: none; stroke: var(--red); stroke-width: 4; stroke-linecap: round; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .facts { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 6px; }
+  .facts li { font-size: var(--step--1); line-height: 1.35; color: var(--ink-soft); padding-left: 12px; border-left: 3px solid var(--saffron); }
+  .facts strong { display: block; color: var(--ink); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-media .arch { animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
+    .bubble { animation: pop .5s .7s cubic-bezier(.3,1.6,.5,1) both; }
+    .pen path { stroke-dasharray: 260; stroke-dashoffset: 260; animation: draw .8s 1s ease-out forwards; }
+    @keyframes rise { from { clip-path: inset(100% 0 0 0 round 999px 999px 22px 22px); } to { clip-path: inset(0 0 0 0 round 999px 999px 22px 22px); } }
+    @keyframes pop { from { opacity: 0; transform: scale(.6) translateY(10px); } to { opacity: 1; transform: none; } }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+  }
+
+  @media (min-width: 900px) {
+    .hero { padding-top: 56px; background: linear-gradient(90deg, var(--white) 0 55%, var(--mist) 55%); }
+    .hero-grid { grid-template-columns: 1.15fr 1fr; align-items: center; gap: 64px; }
+    .hero-media { order: 2; }
+    .bubble { left: -40px; }
+  }
+
+  /* LESSONS SHELF */
+  .shelf {
+    display: grid; grid-auto-flow: column; grid-auto-columns: min(78%, 330px); gap: 16px;
+    overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter);
+    padding: 4px var(--gutter) 18px;
+  }
+  .lesson { scroll-snap-align: start; display: grid; grid-template-rows: auto 1fr; background: var(--white); border: 1px solid var(--mist-2); border-radius: var(--radius); overflow: hidden; text-decoration: none; color: var(--ink); transition: transform .2s ease, box-shadow .2s ease; }
+  .lesson:hover { transform: translateY(-4px); box-shadow: var(--shadow); color: var(--ink); }
+  .lesson :global(img) { aspect-ratio: 4 / 3; object-fit: cover; width: 100%; }
+  .lesson-body { display: grid; gap: 10px; padding: 20px; align-content: start; }
+  .lesson-body p { font-size: var(--step--1); color: var(--ink-soft); }
+  .lesson .price { margin-top: auto; color: var(--ink); font-size: 1rem; }
+  .lesson .price strong { font: 600 1.4rem/1 var(--serif); color: var(--teal); }
+  .pack { margin-top: 10px; color: var(--ink-soft); }
+  @media (min-width: 1100px) {
+    .shelf { width: min(100% - 2 * var(--gutter), var(--max)); margin-inline: auto; padding-inline: 0; grid-auto-flow: row; grid-template-columns: repeat(5, 1fr); overflow: visible; }
+  }
+
+  /* ABOUT */
+  .about { display: grid; gap: 40px; }
+  .about-photos { position: relative; width: min(100%, 400px); margin-inline: auto; padding-bottom: 60px; }
+  .arch--small { aspect-ratio: 3 / 3.8; width: 78%; margin-left: auto; }
+  .arch--small :global(img) { object-position: 78% 62%; }
+  .polaroid { position: absolute; background: var(--white); padding: 8px 8px 10px; box-shadow: var(--shadow); width: 42%; border-radius: 6px; }
+  .polaroid :global(img) { aspect-ratio: 1; object-fit: cover; width: 100%; border-radius: 3px; }
+  .polaroid figcaption { font: italic 500 .85rem/1.2 var(--serif); text-align: center; padding-top: 6px; color: var(--ink-soft); }
+  .p1 { left: 0; top: 14%; transform: rotate(-4deg); }
+  .p2 { left: 16%; bottom: -8px; transform: rotate(3deg); }
+  .about-copy { display: grid; gap: 16px; justify-items: start; }
+  .sig { font: italic 500 1.5rem/1 var(--serif); color: var(--red); }
+  @media (min-width: 900px) { .about { grid-template-columns: 1fr 1.1fr; align-items: center; gap: 72px; } }
+
+  /* STEPS */
+  .steps { list-style: none; padding: 0; display: grid; gap: 16px; counter-reset: s; }
+  .steps li { position: relative; background: var(--mist); border-radius: var(--radius); padding: 24px 24px 24px 84px; display: grid; gap: 6px; }
+  .n { position: absolute; left: 22px; top: 22px; width: 44px; height: 50px; display: grid; place-items: center; border-radius: 999px 999px 10px 10px; background: var(--teal); color: #fff; font: 600 1.3rem/1 var(--serif); padding-top: 4px; }
+  .steps p { color: var(--ink-soft); font-size: var(--step--1); }
+  @media (min-width: 900px) { .steps { grid-template-columns: repeat(3, 1fr); } .steps li { padding: 90px 28px 28px; } .n { left: 28px; top: 28px; } }
+
+  /* FAQ */
+  .faq-wrap { display: grid; gap: 28px; }
+  .faq { display: grid; gap: 10px; }
+  .faq details { border: 1px solid var(--mist-2); border-radius: 14px; padding: 0 20px; background: var(--white); }
+  .faq summary { list-style: none; cursor: pointer; padding: 18px 32px 18px 0; font-weight: 600; position: relative; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: '+'; position: absolute; right: 0; top: 50%; transform: translateY(-50%); font: 400 1.6rem/1 var(--sans); color: var(--teal); transition: transform .2s; }
+  .faq details[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+  .faq details p { padding-bottom: 18px; color: var(--ink-soft); }
+  @media (min-width: 900px) { .faq-wrap { grid-template-columns: 1fr 1.6fr; align-items: start; } }
+
+  /* FINAL CTA */
+  .cta-band { background: var(--teal); color: #d8e8ea; padding: clamp(56px, 8vw, 96px) 0; }
+  .cta-band h2 { color: #fff; }
+  .cta-grid { display: grid; gap: 28px; justify-items: start; }
+  .cta-grid p { margin: 14px 0 24px; }
+  .arch--cta { width: 170px; aspect-ratio: 3 / 3.6; border-color: rgba(255,255,255,.18); }
+  .arch--cta :global(img) { object-position: 55% 25%; }
+  .btn--light { background: #fff; color: var(--teal-deep); }
+  .btn--light:hover { background: var(--saffron); color: var(--teal-deep); }
+  .link-light { color: #fff; }
+  .link-light:hover { color: var(--saffron); }
+  @media (min-width: 900px) { .cta-grid { grid-template-columns: auto 1fr; align-items: center; gap: 56px; } .arch--cta { width: 230px; } }
+</style>

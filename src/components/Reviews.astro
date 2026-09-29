@@ -1,0 +1,40 @@
+---
+// Shows real, approved reviews from src/data/reviews.json.
+// Empty state invites the first reviews – never placeholder testimonials.
+import reviews from '../data/reviews.json';
+interface Review { name: string; context: string; rating: number; text: string; date: string; }
+const list = reviews as Review[];
+---
+<section class="section section--mist" id="reviews" aria-labelledby="reviews-h">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="reviews-h">What students say</h2>
+    </div>
+    {list.length === 0 ? (
+      <div class="empty" data-reveal>
+        <p class="big">María is just opening her diary in London, so her first reviews are on their way.</p>
+        <p class="muted">Already studied Spanish with María, or had your children learn with her? Your words would mean a lot.</p>
+        <a class="btn btn--ghost" href="/reviews/write/">Share your experience</a>
+      </div>
+    ) : (
+      <div class="track" tabindex="0" aria-label="Student reviews, scroll sideways for more">
+        {list.map((r) => (
+          <figure class="card">
+            <div class="stars" aria-label={`${r.rating} out of 5 stars`}>{'★'.repeat(r.rating)}</div>
+            <blockquote><p>{r.text}</p></blockquote>
+            <figcaption><strong>{r.name}</strong><span>{r.context}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+<style>
+  .empty { display: grid; gap: 16px; justify-items: start; background: var(--white); border-radius: var(--radius); padding: clamp(24px, 5vw, 44px); border-left: 6px solid var(--saffron); }
+  .big { font: 500 var(--step-1)/1.4 var(--serif); color: var(--teal-deep); }
+  .track { display: grid; grid-auto-flow: column; grid-auto-columns: min(86%, 380px); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; }
+  .card { scroll-snap-align: start; background: var(--white); border-radius: var(--radius); padding: 26px; display: grid; gap: 14px; align-content: start; }
+  .stars { color: var(--saffron); letter-spacing: 2px; }
+  figcaption { display: grid; font-size: var(--step--1); }
+  figcaption span { color: var(--ink-soft); }
+</style>
