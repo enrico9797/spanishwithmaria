@@ -21,10 +21,10 @@ export const photos = {
 
 export const alts = {
   heroDesk: 'María smiling at her desk, ready for a Spanish lesson',
-  online: 'María teaching an online Spanish lesson on her laptop',
-  conversation: 'María chatting in Spanish with a student at the table',
+  online: 'María giving an online Spanish lesson on her laptop, with a notebook and a cup of tea',
+  conversation: 'María talking with a student at a dining table, pointing at a Spanish grammar book',
   grammar: 'María explaining Spanish grammar from a textbook',
-  inperson: 'María giving a Spanish lesson at a student’s kitchen table',
+  inperson: 'María giving an in-person Spanish lesson at a dining table, pointing at a grammar book',
   children: 'María clapping and laughing with two young children during a Spanish lesson at the table',
   cooking: 'María preparing Peruvian ceviche in her kitchen',
   realWindow: 'María smiling by a window',
