@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../Breadcrumbs.astro';
 import CtaBand from '../CtaBand.astro';
 import { photos, alts } from '../../data/photos.js';
-import { t, route, serviceList, alternatesFor } from '../../i18n/content.js';
+import { t, route, serviceList, alternatesFor, allDurations, durLabel } from '../../i18n/content.js';
 import { coreGraph, breadcrumbs, serviceSchema } from '../../lib/schema.js';
 interface Props { lang: 'en' | 'es' | 'it'; }
 const { lang } = Astro.props;
@@ -37,7 +37,7 @@ const schema = [...coreGraph(lang), breadcrumbs(crumbs), ...services.map((s) => 
           <div class="txt">
             <h2><a href={s.href}>{s.title}</a></h2>
             <p>{s.short}</p>
-            <p class="meta"><span class="price"><strong>{s.price}</strong> {s.unit}</span></p>
+            <p class="meta"><span class="price">{C.from} <strong>{s.price}</strong></span> <span class="durs">{s.durations.map((d) => durLabel(d, lang)).join(' · ')}</span></p>
             <a class="btn btn--ghost" href={s.href}>{C.learnMore}</a>
           </div>
         </article>
@@ -50,13 +50,18 @@ const schema = [...coreGraph(lang), breadcrumbs(crumbs), ...services.map((s) => 
       <h2 class="t-h">{S.pricesH}</h2>
       <div class="table-wrap">
         <table>
-          <thead><tr><th scope="col">{S.lesson}</th><th scope="col">{S.length}</th><th scope="col">{S.priceCol}</th></tr></thead>
+          <thead><tr><th scope="col">{S.lesson}</th>{allDurations.map((d) => <th scope="col" class="num">{durLabel(d, lang)}</th>)}</tr></thead>
           <tbody>
-            {services.map((s) => <tr><th scope="row"><a href={s.href}>{s.title}</a></th><td>{s.length}</td><td><strong>{s.price}</strong></td></tr>)}
+            {services.map((s) => (
+              <tr>
+                <th scope="row"><a href={s.href}>{s.title}</a></th>
+                {allDurations.map((d) => <td class="num">{s.rates[d] ? <strong>£{s.rates[d]}</strong> : <span class="na" aria-label="not available">{C.na}</span>}</td>)}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
-      <p class="pack"><span class="tag">{C.save}</span> {C.perLessonPack} · {C.trialFree}</p>
+      <p class="pack"><span class="tag">{C.save}</span> {C.perLessonPack} · {C.trialFree} · {C.minNote}</p>
       <div class="unsure">
         <h3>{S.notSureH}</h3>
         <p>{S.notSureP}</p>
@@ -83,7 +88,10 @@ const schema = [...coreGraph(lang), breadcrumbs(crumbs), ...services.map((s) => 
   @media (min-width: 900px) { .row { grid-template-columns: 1fr 1fr; gap: 56px; } .row.flip .pic { order: 2; } }
   .t-h { font-size: var(--step-2); margin-bottom: 20px; }
   .table-wrap { overflow-x: auto; background: var(--white); border-radius: var(--radius); }
-  table { width: 100%; border-collapse: collapse; min-width: 480px; }
+  table { width: 100%; border-collapse: collapse; min-width: 560px; }
+  .num { text-align: center; white-space: nowrap; }
+  .na { color: var(--ink-soft); }
+  .durs { font-size: var(--step--1); color: var(--ink-soft); margin-left: 8px; }
   th, td { text-align: left; padding: 16px 20px; border-bottom: 1px solid var(--line); }
   thead th { font-size: var(--step--1); color: var(--ink-soft); font-weight: 700; }
   tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }

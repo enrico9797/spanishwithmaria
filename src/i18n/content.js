@@ -1,13 +1,18 @@
 // All page copy, routes and service details for EN / ES / IT.
 // Prices live here too so every language stays in sync.
 
-const prices = {
-  online: { price: 28, unit: { en: 'per hour', es: 'por hora', it: "all'ora" } },
-  conversation: { price: 22, unit: { en: 'per 45 minutes', es: 'por 45 minutos', it: 'per 45 minuti' } },
-  children: { price: 28, unit: { en: 'per hour', es: 'por hora', it: "all'ora" } },
-  inperson: { price: 35, unit: { en: 'per hour', es: 'por hora', it: "all'ora" } },
-  cooking: { price: 40, unit: { en: 'per 90-minute class', es: 'por clase de 90 minutos', it: 'per lezione di 90 minuti' } },
+// Rates by lesson length (minutes -> £). Shorter lessons cost a little more per minute.
+const standard = { 30: 16, 45: 22, 60: 28, 90: 40 };
+export const rates = {
+  online: standard,
+  conversation: standard,
+  children: standard,
+  inperson: { 60: 35, 90: 50 },   // minimum 60 min because of travel
+  cooking: { 60: 30, 90: 40 },
 };
+export const allDurations = [30, 45, 60, 90];
+const minLabel = { en: 'min', es: 'min', it: 'min' };
+export const durLabel = (m, lang) => (m === 60 ? { en: '1 hour', es: '1 hora', it: '1 ora' }[lang] : m === 90 ? { en: '1½ hours', es: '1 h 30', it: '1 ora e ½' }[lang] : `${m} ${minLabel[lang]}`);
 
 export const serviceKeys = ['online', 'conversation', 'children', 'inperson', 'cooking'];
 
@@ -46,7 +51,6 @@ export function alternatesFor(page, key) {
 }
 
 export const photoFor = { online: 'online', conversation: 'conversation', children: 'children', inperson: 'inperson', cooking: 'cooking' };
-export const priceOf = (k) => prices[k];
 
 /* ------------------------------------------------------------------ */
 export const t = {
@@ -59,8 +63,8 @@ export const t = {
       from: 'from', perLessonPack: 'Book 10 lessons and save 10%.', compare: 'Compare all lessons', save: 'Save 10%',
       bookTrial: 'Book a free 20-min trial', orWhatsApp: 'or message on WhatsApp', learnMore: 'Find out more',
       whoFor: 'Who it’s for', lessonLooks: 'What a lesson looks like', included: 'What’s included', faq: 'Questions', other: 'Other ways to learn',
-      price: 'Price', trialFree: 'First 20 minutes free', ctaTitle: 'Your first 20 minutes are on María',
-      ctaText: 'Say hello, find your level and see if you enjoy learning together. If you do, lessons start from £22.',
+      price: 'Price', trialFree: 'First 20 minutes free', chooseLength: 'Choose your lesson length', perLesson: 'per lesson', na: '–', minNote: 'In-person lessons are at least 1 hour because of travel.', ctaTitle: 'Your first 20 minutes are on María',
+      ctaText: 'Say hello, find your level and see if you enjoy learning together. If you do, lessons start from £16.',
       ctaNote: '¡Te espero!',
     },
     home: {
@@ -114,7 +118,7 @@ export const t = {
       },
       conversation: {
         title: 'Conversation practice', metaTitle: 'Spanish Conversation Practice Online | Spanish with María',
-        metaDesc: 'Keep your Spanish alive with relaxed one-to-one conversation practice with a native speaker. 45-minute sessions online, from £22. Free 20-minute trial.',
+        metaDesc: 'Keep your Spanish alive with relaxed one-to-one conversation practice with a native speaker. Sessions from 30 minutes, online, from £16. Free 20-minute trial.',
         short: 'An hour a week of real, relaxed Spanish conversation to keep your Spanish alive and grow your confidence.',
         length: '45 minutes',
         intro: ['You have studied Spanish, maybe for years, but you rarely get to speak it. Conversation practice with María is the easiest way to change that: a relaxed chat, entirely in Spanish, about the things you actually care about.', 'María gently corrects the mistakes that matter, gives you the words you are missing, and helps you sound more natural, without turning the conversation into a grammar lesson.'],
@@ -132,28 +136,28 @@ export const t = {
         forWho: ['Young children starting their first words in Spanish', 'Bilingual families who want to keep Spanish alive at home', 'School-age children who need support with Spanish at school', 'Parents who want their children to talk with Spanish-speaking relatives'],
         lesson: [['Hello song or game', 'A playful start so your child feels relaxed and ready.'], ['A theme', 'Colours, animals, food, family, a story: learnt through play.'], ['Speaking time', 'Lots of chances for your child to say things, not just listen.'], ['A little homework', 'An optional small activity to do together at home.']],
         includes: ['Lessons adapted to age and attention span', 'Games, songs and stories in Spanish', 'A short update for parents after each lesson', 'Parents are always welcome to join in'],
-        faqs: [['From what age?', 'From around four years old. Younger children usually do shorter sessions of 30 to 45 minutes, priced pro rata.'], ['Can parents join?', 'Of course. Many parents like to sit in, especially at the start.'], ['My child already speaks some Spanish at home. Is this for us?', 'Yes. María helps bilingual children grow their vocabulary, confidence, reading and writing.']],
+        faqs: [['From what age?', 'From around four years old. Younger children usually do shorter sessions of 30 or 45 minutes, which are priced accordingly.'], ['Can parents join?', 'Of course. Many parents like to sit in, especially at the start.'], ['My child already speaks some Spanish at home. Is this for us?', 'Yes. María helps bilingual children grow their vocabulary, confidence, reading and writing.']],
       },
       inperson: {
         title: 'In-person lessons in London', metaTitle: 'In-Person Spanish Lessons in London | Spanish with María',
-        metaDesc: 'Face-to-face Spanish lessons in London with María, a friendly native speaker. One-to-one lessons at your home or a quiet café in West London. Free 20-minute trial online.',
+        metaDesc: 'Face-to-face Spanish lessons in London with María, a friendly native speaker. One-to-one lessons at your home or a quiet café around London. Free 20-minute trial online.',
         short: 'Lessons at your home or a quiet café in London, for people who learn best face to face.',
         length: '60 minutes',
         intro: ['Some people simply learn better face to face. María offers one-to-one Spanish lessons in person in London, at your home or in a quiet café nearby.', 'Lessons follow the same friendly approach as online: clear explanations, lots of speaking and notes to take away. The first step is still a free 20-minute call, so you can meet María and agree on a plan before your first lesson.'],
         forWho: ['Learners who prefer face-to-face lessons', 'Children who concentrate better in person', 'Couples or friends who want to learn together', 'Anyone who spends a lot of time on screens already'],
         lesson: [['Meet', 'At your home or a quiet café agreed together.'], ['Learn', 'New language explained clearly with real examples.'], ['Speak', 'Plenty of conversation practice, face to face.'], ['Take notes home', 'A summary of what you covered and what to review.']],
         includes: ['One-to-one lessons at your home or a café', 'All materials provided', 'Notes after every lesson', 'Online lessons available whenever you prefer'],
-        faqs: [['Which areas of London do you cover?', 'Mainly West London. Other areas are possible by arrangement, so just ask.'], ['Can two people share a lesson?', 'Yes, couples or friends can share a lesson. Ask María for a price.'], ['Can I switch between online and in person?', 'Yes. Many students mix both depending on their week.']],
+        faqs: [['Which areas of London do you cover?', 'Anywhere around London that is easy to reach. Just tell María where you are.'], ['Can two people share a lesson?', 'Yes, couples or friends can share a lesson. Ask María for a price.'], ['Can I switch between online and in person?', 'Yes. Many students mix both depending on their week.']],
       },
       cooking: {
         title: 'Cooking in Spanish', metaTitle: 'Spanish Cooking Classes: Learn Spanish While You Cook | Spanish with María',
-        metaDesc: 'Learn Spanish while cooking Peruvian and Italian dishes with María. Fun 90-minute classes online or in London, fully in Spanish at your level.',
+        metaDesc: 'Learn Spanish while cooking Peruvian and Italian dishes with María. Fun 60 or 90-minute classes online or in London, fully in Spanish at your level.',
         short: 'Learn Spanish while cooking Peruvian and Italian dishes together, from ceviche to fresh pasta.',
         length: '90 minutes',
         intro: ['Food is one of the best ways into a language. In these classes you cook a dish together with María while speaking Spanish, learning the words for ingredients, actions and flavours as you go.', 'María cooks the dishes she grew up with in Peru, like ceviche and lomo saltado, and the Italian favourites she learnt in 35 years in Rome. The Spanish is adapted to your level, so beginners and fluent speakers both have fun.'],
         forWho: ['Food lovers who want a different way to practise Spanish', 'Families looking for a fun activity with children', 'Friends or couples who want to learn together', 'Anyone curious about Peruvian food'],
         lesson: [['Ingredients list', 'Sent in advance, with the Spanish words you will need.'], ['Cook together', 'Step by step, with María guiding you in Spanish.'], ['Talk at the table', 'A relaxed chat about the dish, food and culture.'], ['Recipe card', 'The recipe in Spanish and English to keep.']],
-        includes: ['A 90-minute class fully in Spanish at your level', 'Ingredients list and vocabulary in advance', 'The recipe in Spanish and English', 'Online, or in person in London'],
+        includes: ['A 60 or 90-minute class fully in Spanish at your level', 'Ingredients list and vocabulary in advance', 'The recipe in Spanish and English', 'Online, or in person in London'],
         faqs: [['How do online cooking classes work?', 'You cook in your own kitchen with your laptop or tablet nearby, while María cooks the same dish on video.'], ['Do I need to speak Spanish already?', 'No. María adapts the Spanish to your level, and beginners pick up lots of useful words.'], ['What dishes can we cook?', 'Peruvian classics like ceviche, causa and lomo saltado, and Italian dishes like fresh pasta and tiramisù. You can suggest a dish too.']],
       },
     },
@@ -217,8 +221,8 @@ export const t = {
       from: 'desde', perLessonPack: 'Reserva 10 clases y ahorra un 10%.', compare: 'Ver todas las clases', save: 'Ahorra 10%',
       bookTrial: 'Reserva tu clase gratis de 20 min', orWhatsApp: 'o escribe por WhatsApp', learnMore: 'Más información',
       whoFor: 'Para quién es', lessonLooks: 'Cómo es una clase', included: 'Qué incluye', faq: 'Preguntas', other: 'Otras formas de aprender',
-      price: 'Precio', trialFree: 'Los primeros 20 minutos, gratis', ctaTitle: 'Los primeros 20 minutos son un regalo de María',
-      ctaText: 'Salúdala, descubre tu nivel y comprueba si os gusta aprender juntos. Después, las clases empiezan desde 22 £.',
+      price: 'Precio', trialFree: 'Los primeros 20 minutos, gratis', chooseLength: 'Elige la duración de la clase', perLesson: 'por clase', na: '–', minNote: 'Las clases presenciales duran al menos 1 hora por el desplazamiento.', ctaTitle: 'Los primeros 20 minutos son un regalo de María',
+      ctaText: 'Salúdala, descubre tu nivel y comprueba si os gusta aprender juntos. Después, las clases empiezan desde 16 £.',
       ctaNote: '¡Te espero!',
     },
     home: {
@@ -271,7 +275,7 @@ export const t = {
       },
       conversation: {
         title: 'Conversación en español', metaTitle: 'Práctica de conversación en español online | Spanish with María',
-        metaDesc: 'Mantén vivo tu español con conversación individual y relajada con una hablante nativa. Sesiones de 45 minutos online desde 22 £. Clase de prueba gratis.',
+        metaDesc: 'Mantén vivo tu español con conversación individual y relajada con una hablante nativa. Sesiones online desde 30 minutos, desde 16 £. Clase de prueba gratis.',
         short: 'Conversación real y relajada en español para mantener tu español vivo y ganar confianza.',
         length: '45 minutos',
         intro: ['Has estudiado español, quizá durante años, pero casi nunca lo hablas. La conversación con María es la forma más fácil de cambiarlo: una charla tranquila, toda en español, sobre lo que te interesa.', 'María corrige con cariño los errores importantes, te da las palabras que te faltan y te ayuda a sonar más natural.'],
@@ -289,28 +293,28 @@ export const t = {
         forWho: ['Familias hispanohablantes en Londres que quieren mantener el español', 'Niños que entienden español pero responden en inglés', 'Niños que empiezan desde cero', 'Niños que necesitan apoyo con el español del colegio'],
         lesson: [['Canción o juego de bienvenida', 'Un comienzo divertido para que se relajen.'], ['Un tema', 'Colores, animales, comida, familia, un cuento: aprendido jugando.'], ['Tiempo para hablar', 'Muchas oportunidades para que el niño hable, no solo escuche.'], ['Una tarea pequeña', 'Una actividad opcional para hacer juntos en casa.']],
         includes: ['Clases adaptadas a la edad', 'Juegos, canciones y cuentos en español', 'Un breve resumen para los padres', 'Los padres siempre pueden participar'],
-        faqs: [['¿A partir de qué edad?', 'Desde los cuatro años aproximadamente. Los más pequeños hacen sesiones de 30 a 45 minutos, con precio proporcional.'], ['¿Pueden estar los padres?', 'Por supuesto.'], ['Mi hijo ya habla algo de español en casa. ¿Es para nosotros?', 'Sí. María ayuda a los niños bilingües a ganar vocabulario, confianza, lectura y escritura.']],
+        faqs: [['¿A partir de qué edad?', 'Desde los cuatro años aproximadamente. Los más pequeños suelen hacer sesiones de 30 o 45 minutos, con su propio precio.'], ['¿Pueden estar los padres?', 'Por supuesto.'], ['Mi hijo ya habla algo de español en casa. ¿Es para nosotros?', 'Sí. María ayuda a los niños bilingües a ganar vocabulario, confianza, lectura y escritura.']],
       },
       inperson: {
         title: 'Clases presenciales en Londres', metaTitle: 'Clases de español presenciales en Londres | Spanish with María',
-        metaDesc: 'Clases de español cara a cara en Londres con María, profesora nativa. Clases individuales en tu casa o en una cafetería tranquila del oeste de Londres.',
+        metaDesc: 'Clases de español cara a cara en Londres con María, profesora nativa. Clases individuales en tu casa o en una cafetería tranquila de Londres.',
         short: 'Clases en tu casa o en una cafetería tranquila de Londres, para quien aprende mejor en persona.',
         length: '60 minutos',
         intro: ['Hay personas que aprenden mejor cara a cara. María ofrece clases individuales de español en persona en Londres, en tu casa o en una cafetería tranquila cerca de ti.', 'El primer paso sigue siendo una llamada gratuita de 20 minutos para conoceros y acordar un plan.'],
         forWho: ['Quien prefiere clases cara a cara', 'Niños que se concentran mejor en persona', 'Parejas o amigos que quieren aprender juntos', 'Quien ya pasa mucho tiempo delante de pantallas'],
         lesson: [['Encuentro', 'En tu casa o en una cafetería acordada.'], ['Aprender', 'Explicaciones claras con ejemplos reales.'], ['Hablar', 'Mucha práctica de conversación.'], ['Notas', 'Un resumen de lo visto y lo que repasar.']],
         includes: ['Clases individuales en tu casa o en una cafetería', 'Todos los materiales incluidos', 'Notas después de cada clase', 'Clases online cuando lo prefieras'],
-        faqs: [['¿Qué zonas de Londres?', 'Principalmente el oeste de Londres. Otras zonas, según disponibilidad.'], ['¿Pueden compartir clase dos personas?', 'Sí. Pregunta a María por el precio.'], ['¿Puedo alternar online y presencial?', 'Sí, sin problema.']],
+        faqs: [['¿Qué zonas de Londres?', 'En cualquier zona de Londres bien comunicada. Cuéntale a María dónde estás.'], ['¿Pueden compartir clase dos personas?', 'Sí. Pregunta a María por el precio.'], ['¿Puedo alternar online y presencial?', 'Sí, sin problema.']],
       },
       cooking: {
         title: 'Cocina en español', metaTitle: 'Clases de cocina en español: aprende cocinando | Spanish with María',
-        metaDesc: 'Aprende español cocinando platos peruanos e italianos con María. Clases de 90 minutos online o en Londres, en español adaptado a tu nivel.',
+        metaDesc: 'Aprende español cocinando platos peruanos e italianos con María. Clases de 60 o 90 minutos online o en Londres, en español adaptado a tu nivel.',
         short: 'Aprende español cocinando platos peruanos e italianos, del ceviche a la pasta fresca.',
         length: '90 minutos',
         intro: ['La comida es una de las mejores puertas a un idioma. En estas clases cocinas un plato con María mientras habláis en español.', 'María cocina los platos de su infancia en Perú, como el ceviche o el lomo saltado, y los clásicos italianos que aprendió en 35 años en Roma.'],
         forWho: ['Amantes de la cocina', 'Familias que buscan una actividad divertida con niños', 'Amigos o parejas', 'Curiosos de la cocina peruana'],
         lesson: [['Lista de ingredientes', 'Te llega antes, con el vocabulario necesario.'], ['Cocinamos juntos', 'Paso a paso, con María guiándote en español.'], ['Charla en la mesa', 'Una conversación sobre el plato y la cultura.'], ['Receta', 'La receta en español e inglés.']],
-        includes: ['Clase de 90 minutos en español', 'Ingredientes y vocabulario por adelantado', 'Receta en español e inglés', 'Online o en persona en Londres'],
+        includes: ['Clase de 60 o 90 minutos en español', 'Ingredientes y vocabulario por adelantado', 'Receta en español e inglés', 'Online o en persona en Londres'],
         faqs: [['¿Cómo funcionan online?', 'Cocinas en tu cocina con el portátil o la tablet cerca, mientras María cocina el mismo plato por vídeo.'], ['¿Tengo que hablar español?', 'No. María adapta el español a tu nivel.'], ['¿Qué platos cocinamos?', 'Ceviche, causa, lomo saltado, pasta fresca, tiramisú… y puedes proponer otros.']],
       },
     },
@@ -369,8 +373,8 @@ export const t = {
       from: 'da', perLessonPack: 'Prenota 10 lezioni e risparmi il 10%.', compare: 'Confronta tutte le lezioni', save: 'Risparmi 10%',
       bookTrial: 'Prenota la lezione gratuita di 20 min', orWhatsApp: 'oppure scrivi su WhatsApp', learnMore: 'Scopri di più',
       whoFor: 'Per chi è', lessonLooks: 'Com’è una lezione', included: 'Cosa è incluso', faq: 'Domande', other: 'Altri modi per imparare',
-      price: 'Prezzo', trialFree: 'I primi 20 minuti sono gratis', ctaTitle: 'I primi 20 minuti li offre María',
-      ctaText: 'Saluta María, scopri il tuo livello e vedi se ti piace imparare con lei. Poi le lezioni partono da 22 £.',
+      price: 'Prezzo', trialFree: 'I primi 20 minuti sono gratis', chooseLength: 'Scegli la durata della lezione', perLesson: 'a lezione', na: '–', minNote: 'Le lezioni in presenza durano almeno 1 ora per via degli spostamenti.', ctaTitle: 'I primi 20 minuti li offre María',
+      ctaText: 'Saluta María, scopri il tuo livello e vedi se ti piace imparare con lei. Poi le lezioni partono da 16 £.',
       ctaNote: '¡Te espero!',
     },
     home: {
@@ -423,7 +427,7 @@ export const t = {
       },
       conversation: {
         title: 'Conversazione in spagnolo', metaTitle: 'Conversazione in spagnolo online | Spanish with María',
-        metaDesc: 'Tieni vivo il tuo spagnolo con conversazioni individuali e rilassate con una madrelingua. Sessioni di 45 minuti online da 22 £. Prova gratuita.',
+        metaDesc: 'Tieni vivo il tuo spagnolo con conversazioni individuali e rilassate con una madrelingua. Sessioni online da 30 minuti, da 16 £. Prova gratuita.',
         short: 'Conversazione vera e rilassata in spagnolo per tenere vivo il tuo spagnolo e acquistare sicurezza.',
         length: '45 minuti',
         intro: ['Hai studiato spagnolo, magari per anni, ma lo parli raramente. La conversazione con María è il modo più semplice per cambiare: una chiacchierata tranquilla, tutta in spagnolo, su ciò che ti interessa.', 'María corregge con gentilezza gli errori importanti e ti aiuta a suonare più naturale.'],
@@ -441,28 +445,28 @@ export const t = {
         forWho: ['Bambini che iniziano da zero', 'Famiglie bilingui che vogliono mantenere lo spagnolo', 'Bambini che hanno bisogno di supporto a scuola', 'Genitori che vogliono che i figli parlino con i parenti'],
         lesson: [['Canzone o gioco', 'Un inizio divertente per rilassarsi.'], ['Un tema', 'Colori, animali, cibo, famiglia, una storia.'], ['Tempo per parlare', 'Tante occasioni per il bambino di parlare.'], ['Un piccolo compito', 'Un’attività facoltativa da fare insieme a casa.']],
         includes: ['Lezioni adatte all’età', 'Giochi, canzoni e storie in spagnolo', 'Un breve aggiornamento per i genitori', 'I genitori possono sempre partecipare'],
-        faqs: [['Da che età?', 'Da circa quattro anni. I più piccoli fanno sessioni da 30 a 45 minuti, con prezzo proporzionale.'], ['I genitori possono partecipare?', 'Certamente.'], ['Mio figlio parla già un po’ di spagnolo. Fa per noi?', 'Sì, María aiuta i bambini bilingui con vocabolario, lettura e scrittura.']],
+        faqs: [['Da che età?', 'Da circa quattro anni. I più piccoli fanno di solito sessioni da 30 o 45 minuti, con il loro prezzo.'], ['I genitori possono partecipare?', 'Certamente.'], ['Mio figlio parla già un po’ di spagnolo. Fa per noi?', 'Sì, María aiuta i bambini bilingui con vocabolario, lettura e scrittura.']],
       },
       inperson: {
         title: 'Lezioni in presenza a Londra', metaTitle: 'Lezioni di spagnolo in presenza a Londra | Spanish with María',
-        metaDesc: 'Lezioni di spagnolo dal vivo a Londra con María, madrelingua. Lezioni individuali a casa tua o in un caffè tranquillo a West London.',
+        metaDesc: 'Lezioni di spagnolo dal vivo a Londra con María, madrelingua. Lezioni individuali a casa tua o in un caffè tranquillo a Londra.',
         short: 'Lezioni a casa tua o in un caffè tranquillo a Londra, per chi impara meglio di persona.',
         length: '60 minuti',
         intro: ['Alcune persone imparano meglio di persona. María offre lezioni individuali di spagnolo in presenza a Londra, a casa tua o in un caffè tranquillo.', 'Il primo passo è sempre una chiamata gratuita di 20 minuti per conoscervi.'],
         forWho: ['Chi preferisce le lezioni dal vivo', 'Bambini che si concentrano meglio di persona', 'Coppie o amici che vogliono imparare insieme', 'Chi passa già molto tempo davanti agli schermi'],
         lesson: [['Incontro', 'A casa tua o in un caffè concordato.'], ['Imparare', 'Spiegazioni chiare con esempi reali.'], ['Parlare', 'Tanta pratica di conversazione.'], ['Appunti', 'Un riassunto da portare a casa.']],
         includes: ['Lezioni individuali a casa o in un caffè', 'Materiali inclusi', 'Appunti dopo ogni lezione', 'Lezioni online quando preferisci'],
-        faqs: [['Quali zone di Londra?', 'Principalmente West London. Altre zone su richiesta.'], ['Due persone possono condividere la lezione?', 'Sì, chiedi a María il prezzo.'], ['Posso alternare online e presenza?', 'Sì.']],
+        faqs: [['Quali zone di Londra?', 'In tutta Londra, dove è facile arrivare. Dì a María dove ti trovi.'], ['Due persone possono condividere la lezione?', 'Sì, chiedi a María il prezzo.'], ['Posso alternare online e presenza?', 'Sì.']],
       },
       cooking: {
         title: 'Cucina in spagnolo', metaTitle: 'Corsi di cucina in spagnolo: impara cucinando | Spanish with María',
-        metaDesc: 'Impara lo spagnolo cucinando piatti peruviani e italiani con María. Lezioni di 90 minuti online o a Londra, in spagnolo adatto al tuo livello.',
+        metaDesc: 'Impara lo spagnolo cucinando piatti peruviani e italiani con María. Lezioni di 60 o 90 minuti online o a Londra, in spagnolo adatto al tuo livello.',
         short: 'Impara lo spagnolo cucinando piatti peruviani e italiani, dal ceviche alla pasta fresca.',
         length: '90 minuti',
         intro: ['Il cibo è una delle porte migliori per una lingua. In queste lezioni cucini un piatto con María parlando in spagnolo.', 'María cucina i piatti della sua infanzia in Perù, come il ceviche e il lomo saltado, e i classici italiani imparati in 35 anni a Roma.'],
         forWho: ['Amanti della cucina', 'Famiglie con bambini', 'Amici o coppie', 'Curiosi della cucina peruviana'],
         lesson: [['Lista ingredienti', 'Arriva prima, con il vocabolario necessario.'], ['Cuciniamo insieme', 'Passo dopo passo, in spagnolo.'], ['Chiacchiere a tavola', 'Una conversazione sul piatto e la cultura.'], ['Ricetta', 'La ricetta in spagnolo e inglese.']],
-        includes: ['Lezione di 90 minuti in spagnolo', 'Ingredienti e vocabolario in anticipo', 'Ricetta in spagnolo e inglese', 'Online o in presenza a Londra'],
+        includes: ['Lezione di 60 o 90 minuti in spagnolo', 'Ingredienti e vocabolario in anticipo', 'Ricetta in spagnolo e inglese', 'Online o in presenza a Londra'],
         faqs: [['Come funzionano online?', 'Cucini nella tua cucina con il portatile vicino, mentre María cucina lo stesso piatto in video.'], ['Devo già parlare spagnolo?', 'No, María adatta lo spagnolo al tuo livello.'], ['Quali piatti?', 'Ceviche, causa, lomo saltado, pasta fresca, tiramisù… e puoi proporne altri.']],
       },
     },
@@ -514,13 +518,24 @@ export const t = {
 
 const order = { en: serviceKeys, it: serviceKeys, es: ['children', 'online', 'conversation', 'inperson', 'cooking'] };
 export function serviceList(lang) {
-  return order[lang].map((k) => ({
-    key: k,
-    ...t[lang].services[k],
-    price: `£${prices[k].price}`,
-    priceNum: prices[k].price,
-    unit: prices[k].unit[lang],
-    href: route('service', lang, k),
-    photo: photoFor[k],
-  }));
+  return order[lang].map((k) => {
+    const r = rates[k];
+    const durs = Object.keys(r).map(Number).sort((a, b) => a - b);
+    const low = Math.min(...durs.map((d) => r[d]));
+    const def = durs.includes(60) ? 60 : durs[0];
+    return {
+      key: k,
+      ...t[lang].services[k],
+      rates: r,
+      durations: durs,
+      defaultDuration: def,
+      price: `£${low}`,
+      priceNum: low,
+      lowPrice: low,
+      highPrice: Math.max(...durs.map((d) => r[d])),
+      unit: '',
+      href: route('service', lang, k),
+      photo: photoFor[k],
+    };
+  });
 }

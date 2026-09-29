@@ -18,7 +18,7 @@ export function coreGraph(lang = 'en') {
     description: 'One-to-one Spanish lessons online and in person in London with María, a native Spanish speaker from Peru.',
     areaServed: [{ '@type': 'City', name: 'London' }, { '@type': 'Place', name: 'Worldwide (online)' }],
     availableLanguage: ['Spanish', 'English', 'Italian'],
-    priceRange: '£22–£40',
+    priceRange: '£16–£50',
     founder: { '@id': ids.maria },
   };
   if (published.length > 0) {
@@ -67,7 +67,10 @@ export function serviceSchema(s, lang) {
     inLanguage: lang,
     provider: { '@id': ids.business },
     areaServed: s.key === 'inperson' ? { '@type': 'City', name: 'London' } : { '@type': 'Place', name: 'Worldwide (online)' },
-    offers: { '@type': 'Offer', price: String(s.priceNum), priceCurrency: 'GBP', description: s.unit, url: new URL(s.href, U).href },
+    offers: {
+      '@type': 'AggregateOffer', priceCurrency: 'GBP', lowPrice: String(s.lowPrice), highPrice: String(s.highPrice), offerCount: s.durations.length,
+      offers: s.durations.map((d) => ({ '@type': 'Offer', name: `${d} minutes`, price: String(s.rates[d]), priceCurrency: 'GBP', url: new URL(s.href, U).href })),
+    },
   };
 }
 

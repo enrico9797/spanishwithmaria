@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../Breadcrumbs.astro';
 import CtaBand from '../CtaBand.astro';
 import { photos, alts } from '../../data/photos.js';
-import { t, route, serviceList, alternatesFor } from '../../i18n/content.js';
+import { t, route, serviceList, alternatesFor, durLabel } from '../../i18n/content.js';
 import { coreGraph, breadcrumbs, serviceSchema, faqPage } from '../../lib/schema.js';
 interface Props { lang: 'en' | 'es' | 'it'; serviceKey: string; }
 const { lang, serviceKey } = Astro.props;
@@ -29,10 +29,26 @@ const schema = [...coreGraph(lang), breadcrumbs(crumbs), serviceSchema(s, lang),
           <h1>{s.title}</h1>
           {s.intro.map((p, i) => <p class={i === 0 ? 'lead' : 'muted'}>{p}</p>)}
           <div class="price-card">
-            <div><span class="big">{s.price}</span> <span class="unit">{s.unit}</span></div>
+            <fieldset class="durations">
+              <legend>{C.chooseLength}</legend>
+              <div class="seg">
+                {s.durations.map((d) => (
+                  <>
+                    <input type="radio" name="dur" id={`d${d}`} value={d} checked={d === s.defaultDuration} />
+                    <label for={`d${d}`}>{durLabel(d, lang)}</label>
+                  </>
+                ))}
+              </div>
+              <div class="prices">
+                {s.durations.map((d) => (
+                  <p class={`pr pr-${d}`}><span class="big">£{s.rates[d]}</span> <span class="unit">{C.perLesson} · {durLabel(d, lang)}</span></p>
+                ))}
+              </div>
+            </fieldset>
             <ul>
-              <li><span class="dot"></span>{s.length}</li>
               <li><span class="dot dot--c"></span>{C.trialFree}</li>
+              <li><span class="dot"></span>{C.perLessonPack}</li>
+              {s.key === 'inperson' && <li><span class="dot"></span>{C.minNote}</li>}
             </ul>
             <a class="btn btn--primary" href={route('trial', lang)}>{C.bookTrial}</a>
           </div>
@@ -98,6 +114,15 @@ const schema = [...coreGraph(lang), breadcrumbs(crumbs), serviceSchema(s, lang),
   .price-card { margin-top: 8px; background: var(--white); border-radius: var(--radius); padding: 20px; display: grid; gap: 12px; justify-items: start; box-shadow: var(--shadow); }
   .big { font-weight: 800; font-size: 2.2rem; color: var(--teal); }
   .unit { color: var(--ink-soft); }
+  .durations { border: 0; padding: 0; margin: 0; display: grid; gap: 12px; width: 100%; }
+  .durations legend { font-weight: 700; font-size: var(--step--1); margin-bottom: 10px; }
+  .seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; background: var(--sky); padding: 5px; border-radius: 16px; width: 100%; max-width: 420px; }
+  .seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .seg label { text-align: center; white-space: nowrap; padding: 10px 4px; border-radius: 12px; font-weight: 700; font-size: .88rem; cursor: pointer; color: var(--ink-soft); transition: background .15s, color .15s; }
+  .seg input:checked + label { background: var(--teal); color: #fff; }
+  .seg input:focus-visible + label { outline: 3px solid var(--sun); }
+  .pr { display: none; }
+  .durations:has(#d30:checked) .pr-30, .durations:has(#d45:checked) .pr-45, .durations:has(#d60:checked) .pr-60, .durations:has(#d90:checked) .pr-90 { display: block; }
   .price-card li { display: inline-flex; align-items: center; gap: 8px; }
   .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--sun); }
   .dot--c { background: var(--coral); }

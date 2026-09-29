@@ -57,7 +57,7 @@ const schema = [...coreGraph(lang), faqPage(H.faqs)];
           <div class="lesson-body">
             <h3>{s.title}</h3>
             <p>{s.short}</p>
-            <p class="price"><strong>{s.price}</strong> {s.unit}</p>
+            <p class="price">{C.from} <strong>{s.price}</strong></p>
           </div>
         </a>
       ))}
