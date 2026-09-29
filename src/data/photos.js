@@ -11,20 +11,22 @@ import peru from '../assets/photos/maria-peruvian-restaurant.jpg';
 import rome from '../assets/photos/maria-rome.jpg';
 import avatar from '../assets/photos/maria-avatar.jpg';
 import dog from '../assets/photos/maria-with-dog.jpg';
+import london from '../assets/photos/maria-now-in-london.jpg';
 
 export const photos = {
   heroDesk, portrait, portrait2, online, conversation, grammar, cooking, children,
-  realWindow, peru, rome, avatar, dog,
+  realWindow, peru, rome, avatar, dog, london,
   // service card mapping
   inperson: grammar,
 };
 
 export const alts = {
   heroDesk: 'María smiling at her desk, ready for a Spanish lesson',
-  online: 'María giving an online Spanish lesson on her laptop, with a notebook and a cup of tea',
-  conversation: 'María talking with a student at a dining table, pointing at a Spanish grammar book',
+  online: 'María giving an online Spanish lesson on her laptop, wearing headphones',
+  conversation: 'María smiling and chatting over a video call on her tablet, holding a mug of tea',
   grammar: 'María explaining Spanish grammar from a textbook',
-  inperson: 'María giving an in-person Spanish lesson at a dining table, pointing at a grammar book',
+  inperson: 'María giving an in-person Spanish lesson at a dining table, pointing at a grammar book for her student',
+  london: 'María and her husband in front of Big Ben in London',
   children: 'María clapping and laughing with two young children during a Spanish lesson at the table',
   cooking: 'María preparing Peruvian ceviche in her kitchen',
   realWindow: 'María smiling by a window',
