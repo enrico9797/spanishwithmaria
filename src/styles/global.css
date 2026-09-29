@@ -106,3 +106,6 @@ p { text-wrap: pretty; max-width: 62ch; }
 .form-status[data-state="ok"] { background: #e6f6ec; color: #17603a; }
 .form-status[data-state="err"] { background: #fdecea; color: #9b2c22; }
 .hp { position: absolute; left: -9999px; }
+
+/* Make the hidden attribute win over display rules (used after form success) */
+[hidden] { display: none !important; }
