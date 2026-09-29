@@ -1,0 +1,97 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import CtaBand from '../CtaBand.astro';
+import { photos, alts } from '../../data/photos.js';
+import { t, route, alternatesFor } from '../../i18n/content.js';
+import { coreGraph, breadcrumbs, ids } from '../../lib/schema.js';
+import { site } from '../../data/site.js';
+interface Props { lang: 'en' | 'es' | 'it'; }
+const { lang } = Astro.props;
+const A = t[lang].about;
+const N = t[lang].nav;
+const H = t[lang].home;
+const crumbs = [{ name: N.home, href: route('home', lang) }, { name: N.about, href: route('about', lang) }];
+const schema = [...coreGraph(lang), breadcrumbs(crumbs), { '@type': 'AboutPage', url: new URL(route('about', lang), site.url).href, mainEntity: { '@id': ids.maria } }];
+const sectionPhotos = [
+  { src: photos.peru, alt: alts.peru, cap: H.capPeru },
+  { src: photos.children, alt: alts.children, cap: '' },
+  { src: photos.rome, alt: alts.rome, cap: H.capRome },
+  { src: photos.avatar, alt: 'María smiling', cap: '' },
+];
+---
+<Base title={A.title} description={A.desc} lang={lang} alternates={alternatesFor('about')} schema={schema}>
+  <section class="page-hero">
+    <div class="wrap">
+      <Breadcrumbs items={crumbs} />
+      <div class="hero-grid">
+        <div class="inner">
+          <p class="hand" lang="es">{A.kicker}</p>
+          <h1>{A.h1}</h1>
+          <p class="lead">{A.lead}</p>
+        </div>
+        <div class="arch">
+          <Picture src={photos.realWindow} alt={alts.realWindow} widths={[400, 640]} sizes="(min-width: 900px) 380px, 80vw" formats={['avif', 'webp']} loading="eager" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap story">
+      {A.sections.map(([h, p], i) => (
+        <article class:list={['chapter', { flip: i % 2 === 1 }]} data-reveal>
+          <figure class="snap">
+            <Picture src={sectionPhotos[i].src} alt={sectionPhotos[i].alt} widths={[320, 520]} sizes="(min-width: 900px) 340px, 80vw" formats={['avif', 'webp']} />
+            {sectionPhotos[i].cap && <figcaption class="hand">{sectionPhotos[i].cap}</figcaption>}
+          </figure>
+          <div class="txt">
+            <span class="num">{String(i + 1).padStart(2, '0')}</span>
+            <h2>{h}</h2>
+            <p>{p}</p>
+          </div>
+        </article>
+      ))}
+      <p class="sig hand" lang="es">{H.sig}</p>
+    </div>
+  </section>
+
+  <section class="section section--sky">
+    <div class="wrap">
+      <h2 class="h">{A.howH}</h2>
+      <div class="how">
+        {A.how.map(([h, p]) => <div class="card" data-reveal><h3>{h}</h3><p>{p}</p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand lang={lang} title={A.ctaH} />
+</Base>
+<style>
+  .hero-grid { display: grid; gap: 28px; margin-top: 18px; align-items: center; }
+  .inner { display: grid; gap: 14px; }
+  .arch { border-radius: 999px 999px 28px 28px; overflow: hidden; border: 8px solid var(--white); box-shadow: var(--shadow); width: min(100%, 360px); justify-self: center; }
+  .arch :global(img) { width: 100%; aspect-ratio: 3 / 3.7; object-fit: cover; object-position: 78% 62%; }
+  @media (min-width: 900px) { .hero-grid { grid-template-columns: 1.3fr 1fr; gap: 64px; } }
+  .story { display: grid; gap: clamp(40px, 6vw, 72px); }
+  .chapter { display: grid; gap: 22px; align-items: center; }
+  .snap { background: var(--white); padding: 10px 10px 6px; box-shadow: var(--shadow); border-radius: 10px; transform: rotate(-2deg); width: min(100%, 340px); justify-self: center; }
+  .flip .snap { transform: rotate(2deg); }
+  .snap :global(img) { width: 100%; aspect-ratio: 4 / 3.4; object-fit: cover; border-radius: 6px; }
+  .snap figcaption { text-align: center; font-size: 1.5rem; padding-top: 6px; }
+  .txt { display: grid; gap: 10px; }
+  .num { font-weight: 800; color: var(--coral); }
+  .txt h2 { font-size: var(--step-2); }
+  .txt p { color: var(--ink-soft); }
+  @media (min-width: 900px) { .chapter { grid-template-columns: 340px 1fr; gap: 64px; } .chapter.flip { grid-template-columns: 1fr 340px; } .chapter.flip .snap { order: 2; } }
+  .sig { font-size: 2.4rem; color: var(--teal); text-align: center; }
+  .h { font-size: var(--step-2); margin-bottom: 20px; }
+  .how { display: grid; gap: 14px; }
+  @media (min-width: 800px) { .how { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .how { grid-template-columns: repeat(4, 1fr); } }
+  .card { background: var(--white); border-radius: var(--radius); padding: 22px; display: grid; gap: 8px; align-content: start; border-top: 6px solid var(--sun); }
+  .card:nth-child(2) { border-top-color: var(--coral); }
+  .card:nth-child(3) { border-top-color: var(--teal); }
+  .card p { color: var(--ink-soft); font-size: var(--step--1); }
+</style>

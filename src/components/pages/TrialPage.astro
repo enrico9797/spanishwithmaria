@@ -1,0 +1,127 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { site } from '../../data/site.js';
+import { t, route, alternatesFor } from '../../i18n/content.js';
+import { coreGraph, breadcrumbs } from '../../lib/schema.js';
+interface Props { lang: 'en' | 'es' | 'it'; }
+const { lang } = Astro.props;
+const T = t[lang].trial;
+const N = t[lang].nav;
+const F = T.form;
+const crumbs = [{ name: N.home, href: route('home', lang) }, { name: N.trial, href: route('trial', lang) }];
+const calLang = lang;
+---
+<Base title={T.title} description={T.desc} lang={lang} alternates={alternatesFor('trial')} schema={[...coreGraph(lang), breadcrumbs(crumbs)]}>
+  <section class="page-hero">
+    <div class="wrap">
+      <Breadcrumbs items={crumbs} />
+      <div class="inner">
+        <p class="hand" lang="es">{T.kicker}</p>
+        <h1>{T.h1}</h1>
+        <p class="lead">{T.lead}</p>
+        <ol class="mini-steps">{T.steps.map((s, i) => <li><span>{i + 1}</span>{s}</li>)}</ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section cal-section">
+    <div class="wrap">
+      <div id="cal-inline" class="cal" data-cal-link={site.calLink} data-lang={calLang}>
+        <p class="cal-loading">{lang === 'es' ? 'Cargando el calendario…' : lang === 'it' ? 'Caricamento del calendario…' : 'Loading the calendar…'}</p>
+      </div>
+      <p class="fallback">{T.calFallback} <a href={site.calUrl} target="_blank" rel="noopener">{T.calOpen}</a></p>
+    </div>
+  </section>
+
+  <section class="section section--sky" id="ask">
+    <div class="wrap ask">
+      <div class="ask-copy">
+        <h2>{T.askH}</h2>
+        <p>{T.askP}</p>
+        <p><a href={site.whatsapp} rel="noopener">WhatsApp {site.phone}</a><br /><a href={`mailto:${site.email}`}>{site.email}</a></p>
+      </div>
+      <form class="form card" id="contact-form" data-ok={F.ok} data-err={`${F.err} ${site.email}`} data-sending={F.sending} novalidate>
+        <input type="hidden" name="access_key" value={site.web3formsKey} />
+        <input type="hidden" name="subject" value="New enquiry – Spanish with María" />
+        <input type="hidden" name="from_name" value="Spanish with María website" />
+        <input type="hidden" name="page_language" value={lang} />
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <div class="field"><label for="c-name">{F.name}</label><input id="c-name" name="name" required autocomplete="name" /></div>
+        <div class="field"><label for="c-email">{F.email}</label><input id="c-email" name="email" type="email" required autocomplete="email" /></div>
+        <div class="field"><label for="c-phone">{F.phone}</label><input id="c-phone" name="phone" type="tel" autocomplete="tel" /></div>
+        <div class="field"><label for="c-topic">{F.topic}</label><select id="c-topic" name="interested_in">{F.topics.map((o) => <option>{o}</option>)}</select></div>
+        <div class="field"><label for="c-msg">{F.msg}</label><textarea id="c-msg" name="message" required></textarea></div>
+        <button class="btn btn--primary" type="submit">{F.submit}</button>
+        <p class="form-status" role="status" hidden></p>
+        <p class="help">{T.privacyNote} <a href="/privacy/">{t[lang].footer.privacy}</a>.</p>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Cal.com inline embed (official loader), themed in María's teal
+  const el = document.getElementById('cal-inline');
+  if (el) {
+    const link = el.dataset.calLink!;
+    (function (C: any, A: string, L: string) {
+      const p = function (a: any, ar: any) { a.q.push(ar); };
+      const d = C.document;
+      C.Cal = C.Cal || function () {
+        const cal = C.Cal; const ar = arguments;
+        if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; }
+        if (ar[0] === L) {
+          const api: any = function () { p(api, arguments); };
+          const namespace = ar[1]; api.q = api.q || [];
+          if (typeof namespace === 'string') { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]); } else p(cal, ar);
+          return;
+        }
+        p(cal, ar);
+      };
+    })(window, 'https://app.cal.com/embed/embed.js', 'init');
+    const Cal = (window as any).Cal;
+    Cal('init', 'trial', { origin: 'https://cal.com' });
+    Cal.ns.trial('inline', { elementOrSelector: '#cal-inline', calLink: link, config: { layout: 'month_view' } });
+    Cal.ns.trial('ui', { layout: 'month_view', hideEventTypeDetails: false, cssVarsPerTheme: { light: { 'cal-brand': '#16697a' } } });
+  }
+
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  if (form) {
+    const status = form.querySelector('.form-status') as HTMLElement;
+    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      const original = btn.textContent;
+      btn.disabled = true; btn.textContent = form.dataset.sending || '…';
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.message);
+        status.dataset.state = 'ok'; status.textContent = form.dataset.ok || 'Thanks!';
+        form.reset();
+      } catch {
+        status.dataset.state = 'err'; status.textContent = form.dataset.err || 'Error';
+      } finally {
+        status.hidden = false; btn.disabled = false; btn.textContent = original;
+      }
+    });
+  }
+</script>
+
+<style>
+  .mini-steps { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+  .mini-steps li { display: inline-flex; align-items: center; gap: 10px; background: var(--white); border-radius: 999px; padding: 8px 16px 8px 8px; font-weight: 600; font-size: var(--step--1); }
+  .mini-steps span { width: 28px; height: 28px; border-radius: 50%; background: var(--sun); display: grid; place-items: center; font-weight: 800; }
+  .cal-section { padding-top: 32px; }
+  .cal { min-height: 640px; border: 2px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--white); }
+  .cal-loading { padding: 40px; text-align: center; color: var(--ink-soft); }
+  .fallback { margin-top: 14px; color: var(--ink-soft); font-size: var(--step--1); }
+  .ask { display: grid; gap: 28px; }
+  .ask-copy { display: grid; gap: 12px; align-content: start; }
+  .ask-copy h2 { font-size: var(--step-2); }
+  .ask-copy p { color: var(--ink-soft); }
+  .card { background: var(--white); border-radius: var(--radius); padding: clamp(20px, 4vw, 32px); }
+  @media (min-width: 900px) { .ask { grid-template-columns: 1fr 1.3fr; gap: 56px; } }
+</style>

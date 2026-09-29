@@ -1,0 +1,43 @@
+---
+import { Picture } from 'astro:assets';
+import { site } from '../data/site.js';
+import { photos } from '../data/photos.js';
+import { t, route } from '../i18n/content.js';
+interface Props { lang: 'en' | 'es' | 'it'; title?: string; }
+const { lang, title } = Astro.props;
+const C = t[lang].common;
+---
+<section class="cta-band" aria-labelledby="cta-h">
+  <div class="wrap cta-grid">
+    <div class="cta-photo">
+      <div class="arch arch--cta">
+        <Picture src={photos.portrait} alt="María" widths={[300, 480]} sizes="240px" formats={['avif', 'webp']} />
+      </div>
+      <p class="hand cta-note" lang="es">{C.ctaNote}</p>
+    </div>
+    <div>
+      <h2 id="cta-h">{title ?? C.ctaTitle}</h2>
+      <p>{C.ctaText}</p>
+      <div class="ctas">
+        <a class="btn btn--sun" href={route('trial', lang)}>{C.bookTrial}</a>
+        <a class="link-light" href={site.whatsapp} rel="noopener">{C.orWhatsApp}</a>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  .cta-band { background: var(--teal); color: #e2f0f2; padding: clamp(56px, 8vw, 96px) 0; }
+  .cta-band h2 { color: #fff; }
+  .cta-grid { display: grid; gap: 36px; justify-items: start; }
+  .cta-grid p { margin: 14px 0 24px; }
+  .cta-photo { position: relative; }
+  .arch { border-radius: 999px 999px 28px 28px; overflow: hidden; border: 8px solid rgba(255,255,255,.25); background: var(--sky); }
+  .arch :global(picture) { display: block; height: 100%; }
+  .arch :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 55% 25%; }
+  .arch--cta { width: 170px; aspect-ratio: 3 / 3.6; }
+  .cta-note { position: absolute; left: 50%; bottom: -22px; transform: translateX(-50%) rotate(-6deg); white-space: nowrap; font-size: 2rem; color: var(--ink); background: var(--sun); padding: 4px 16px 6px; border-radius: 999px; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .link-light { color: #fff; font-weight: 600; }
+  .link-light:hover { color: var(--sun); }
+  @media (min-width: 900px) { .cta-grid { grid-template-columns: auto 1fr; align-items: center; gap: 96px; } .arch--cta { width: 220px; } }
+</style>

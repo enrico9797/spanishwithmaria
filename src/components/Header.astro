@@ -1,11 +1,13 @@
 ---
 import Logo from './Logo.astro';
+import { t, route } from '../i18n/content.js';
 interface Props { lang: 'en' | 'es' | 'it'; alternates: Partial<Record<'en' | 'es' | 'it', string>>; }
 const { lang, alternates } = Astro.props;
+const L = t[lang].nav;
 const nav = [
-  { href: '/services/', label: 'Lessons' },
-  { href: '/about/', label: 'About María' },
-  { href: '/reviews/', label: 'Reviews' },
+  { href: route('services', lang), label: L.services },
+  { href: route('about', lang), label: L.about },
+  { href: route('reviews', lang), label: L.reviews },
 ];
 const langLinks = [
   { code: 'en', label: 'English', href: alternates.en ?? '/' },
@@ -16,7 +18,7 @@ const path = Astro.url.pathname;
 ---
 <header class="site-header">
   <div class="wrap bar">
-    <a class="home" href="/" aria-label="Spanish with María, home"><Logo /></a>
+    <a class="home" href={route('home', lang)} aria-label={`Spanish with María, ${L.home}`}><Logo /></a>
 
     <nav class="desk-nav" aria-label="Main">
       {nav.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
@@ -24,21 +26,21 @@ const path = Astro.url.pathname;
 
     <div class="right">
       <details class="lang">
-        <summary aria-label="Change language"><span>{lang.toUpperCase()}</span></summary>
+        <summary aria-label={L.lang}><span>{lang.toUpperCase()}</span></summary>
         <ul>
           {langLinks.map((l) => (
             <li><a href={l.href} hreflang={l.code} lang={l.code} aria-current={l.code === lang ? 'true' : undefined}>{l.label}</a></li>
           ))}
         </ul>
       </details>
-      <a class="btn btn--primary desk-cta" href="/free-trial/">Free 20-min trial</a>
+      <a class="btn btn--primary desk-cta" href={route('trial', lang)}>{L.trial}</a>
       <details class="menu">
-        <summary aria-label="Open menu">
+        <summary aria-label={L.menu}>
           <span class="burger" aria-hidden="true"><i></i><i></i></span>
         </summary>
         <nav aria-label="Mobile">
           {nav.map((n) => <a href={n.href}>{n.label}</a>)}
-          <a class="btn btn--primary" href="/free-trial/">Book a free 20-min trial</a>
+          <a class="btn btn--primary" href={route('trial', lang)}>{L.trialLong}</a>
         </nav>
       </details>
     </div>

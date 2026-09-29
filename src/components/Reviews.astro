@@ -1,32 +1,45 @@
 ---
-// Shows real, approved reviews from src/data/reviews.json.
+// Shows real, approved reviews from src/data/reviews.json (published !== false).
 // Empty state invites the first reviews – never placeholder testimonials.
 import reviews from '../data/reviews.json';
-interface Review { name: string; context: string; rating: number; text: string; date: string; }
-const list = reviews as Review[];
+import { t, route } from '../i18n/content.js';
+interface Review { name: string; context: string; rating: number; text: string; date: string; verified?: boolean; published?: boolean; lang?: string; }
+interface Props { lang: 'en' | 'es' | 'it'; heading?: boolean; grid?: boolean; }
+const { lang, heading = true, grid = false } = Astro.props;
+const R = t[lang].reviewsPage;
+const list = (reviews as Review[]).filter((r) => r.published !== false).sort((a, b) => b.date.localeCompare(a.date));
+const fmt = (d: string) => new Date(d).toLocaleDateString(lang === 'en' ? 'en-GB' : lang, { month: 'long', year: 'numeric' });
 ---
-<section class="section section--sun" id="reviews" aria-labelledby="reviews-h">
+<section class="section section--sun" id="reviews" aria-labelledby={heading ? 'reviews-h' : undefined}>
   <div class="wrap">
-    <div class="section-head">
-      <p class="hand">Opiniones</p>
-      <h2 id="reviews-h">What students say</h2>
-    </div>
+    {heading && (
+      <div class="section-head">
+        <p class="hand" lang="es">{R.kicker}</p>
+        <h2 id="reviews-h">{R.h1}</h2>
+      </div>
+    )}
     {list.length === 0 ? (
       <div class="empty" data-reveal>
-        <p class="big">María is just opening her diary in London, so her first reviews are on their way.</p>
-        <p class="muted">Already studied Spanish with María, or had your children learn with her? Your words would mean a lot.</p>
-        <a class="btn btn--ghost" href="/reviews/write/">Share your experience</a>
+        <p class="big">{R.empty}</p>
+        <p class="muted">{R.emptySub}</p>
+        <a class="btn btn--ghost" href={route('reviewsWrite', lang)}>{R.write}</a>
       </div>
     ) : (
-      <div class="track" tabindex="0" aria-label="Student reviews, scroll sideways for more">
-        {list.map((r) => (
-          <figure class="card">
-            <div class="stars" aria-label={`${r.rating} out of 5 stars`}>{'★'.repeat(r.rating)}</div>
-            <blockquote><p>{r.text}</p></blockquote>
-            <figcaption><strong>{r.name}</strong><span>{r.context}</span></figcaption>
-          </figure>
-        ))}
-      </div>
+      <>
+        <div class:list={[grid ? 'grid' : 'track']} tabindex={grid ? undefined : 0}>
+          {list.map((r) => (
+            <figure class="card">
+              <div class="top">
+                <span class="stars" role="img" aria-label={`${r.rating} ${R.stars}`}>{'★'.repeat(r.rating)}<span class="off">{'★'.repeat(5 - r.rating)}</span></span>
+                {r.verified && <span class="badge">✓ {R.verified}</span>}
+              </div>
+              <blockquote lang={r.lang}><p>{r.text}</p></blockquote>
+              <figcaption><strong>{r.name}</strong><span>{r.context} · {fmt(r.date)}</span></figcaption>
+            </figure>
+          ))}
+        </div>
+        <p class="more"><a class="btn btn--ghost" href={route('reviewsWrite', lang)}>{R.write}</a></p>
+      </>
     )}
   </div>
 </section>
@@ -34,8 +47,14 @@ const list = reviews as Review[];
   .empty { display: grid; gap: 16px; justify-items: start; background: var(--white); border-radius: var(--radius); padding: clamp(24px, 5vw, 44px); border: 2px dashed var(--sun); }
   .big { font: 700 var(--step-1)/1.4 var(--sans); color: var(--ink); }
   .track { display: grid; grid-auto-flow: column; grid-auto-columns: min(86%, 380px); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; }
-  .card { scroll-snap-align: start; background: var(--white); border-radius: var(--radius); padding: 26px; display: grid; gap: 14px; align-content: start; }
-  .stars { color: #f2a900; letter-spacing: 2px; }
+  .grid { display: grid; gap: 16px; }
+  @media (min-width: 800px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  .card { scroll-snap-align: start; background: var(--white); border-radius: var(--radius); padding: 24px; display: grid; gap: 14px; align-content: start; }
+  .top { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+  .stars { color: #f2a900; letter-spacing: 2px; font-size: 1.1rem; }
+  .off { color: var(--line); }
+  .badge { font-size: .8rem; font-weight: 700; color: var(--teal); background: var(--sky); padding: 4px 10px; border-radius: 999px; }
   figcaption { display: grid; font-size: var(--step--1); }
   figcaption span { color: var(--ink-soft); }
+  .more { margin-top: 24px; }
 </style>

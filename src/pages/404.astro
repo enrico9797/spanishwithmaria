@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Page not found | Spanish with María" description="This page could not be found." noindex>
+  <section class="page-hero nf">
+    <div class="wrap inner">
+      <p class="hand" lang="es">¡Ay, perdón!</p>
+      <h1>We can’t find that page</h1>
+      <p class="lead">It may have moved. Try one of these instead:</p>
+      <p class="links"><a class="btn btn--primary" href="/">Home</a> <a class="btn btn--ghost" href="/services/">Lessons & prices</a> <a class="btn btn--ghost" href="/free-trial/">Free trial</a></p>
+    </div>
+  </section>
+</Base>
+<style>.nf { padding: 80px 0 120px; } .links { display: flex; flex-wrap: wrap; gap: 10px; }</style>

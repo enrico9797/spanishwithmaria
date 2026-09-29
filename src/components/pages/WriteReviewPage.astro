@@ -1,0 +1,127 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { site } from '../../data/site.js';
+import { t, route, alternatesFor } from '../../i18n/content.js';
+import { breadcrumbs } from '../../lib/schema.js';
+interface Props { lang: 'en' | 'es' | 'it'; }
+const { lang } = Astro.props;
+const W = t[lang].writeReview;
+const N = t[lang].nav;
+const crumbs = [
+  { name: N.home, href: route('home', lang) },
+  { name: N.reviews, href: route('reviews', lang) },
+  { name: W.h1, href: route('reviewsWrite', lang) },
+];
+---
+<Base title={W.title} description={W.desc} lang={lang} alternates={alternatesFor('reviewsWrite')} schema={[breadcrumbs(crumbs)]}>
+  <section class="page-hero">
+    <div class="wrap narrow">
+      <Breadcrumbs items={crumbs} />
+      <div class="inner">
+        <p class="hand" lang="es">{W.kicker}</p>
+        <h1>{W.h1}</h1>
+        <p class="lead">{W.lead}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap narrow">
+      <form class="form card" id="review-form" data-lang={lang} data-ok={W.ok} data-err={`${W.err} ${site.email}`} data-sending={W.sending} novalidate>
+        <input type="hidden" name="access_key" value={site.web3formsKey} />
+        <input type="hidden" name="subject" value="⭐ New review to approve – Spanish with María" />
+        <input type="hidden" name="from_name" value="Spanish with María website" />
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+        <div class="field">
+          <label for="r-name">{W.name}</label>
+          <input id="r-name" name="name" required maxlength="60" placeholder={W.namePh} autocomplete="name" />
+        </div>
+        <div class="field">
+          <label for="r-email">{W.email}</label>
+          <input id="r-email" name="email" type="email" required autocomplete="email" aria-describedby="r-email-h" />
+          <p class="help" id="r-email-h">{W.emailHelp}</p>
+        </div>
+        <div class="field">
+          <label for="r-what">{W.what}</label>
+          <select id="r-what" name="learned" required>
+            {W.whatOpts.map((o) => <option>{o}</option>)}
+          </select>
+        </div>
+        <fieldset class="field stars-field">
+          <legend>{W.rating}</legend>
+          <div class="stars">
+            {[5, 4, 3, 2, 1].map((n) => (
+              <>
+                <input type="radio" id={`star${n}`} name="rating" value={n} required checked={n === 5} />
+                <label for={`star${n}`} aria-label={`${n}/5`}>★</label>
+              </>
+            ))}
+          </div>
+        </fieldset>
+        <div class="field">
+          <label for="r-text">{W.text}</label>
+          <textarea id="r-text" name="review" required minlength="20" maxlength="1200" placeholder={W.textPh}></textarea>
+        </div>
+        <label class="check"><input type="checkbox" name="consent" value="yes" required /> <span>{W.consent}</span></label>
+        <button class="btn btn--primary" type="submit">{W.submit}</button>
+        <p class="form-status" role="status" hidden></p>
+        <p class="help note">{W.note}</p>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const form = document.getElementById('review-form') as HTMLFormElement | null;
+  if (form) {
+    const status = form.querySelector('.form-status') as HTMLElement;
+    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      const fd = new FormData(form);
+      const entry = {
+        name: String(fd.get('name')).trim(),
+        context: String(fd.get('learned')),
+        rating: Number(fd.get('rating')),
+        text: String(fd.get('review')).trim(),
+        date: new Date().toISOString().slice(0, 10),
+        lang: form.dataset.lang,
+        verified: false,
+        published: true,
+      };
+      // Ready-to-paste entry for src/data/reviews.json – makes approving a review a 1-minute job
+      fd.append('HOW TO PUBLISH', 'If this is a real student: open src/data/reviews.json on GitHub, paste the line below inside the [ ] (add a comma between entries), set "verified": true if María confirms they were her student, and commit. The site updates in about 2 minutes.');
+      fd.append('entry_to_paste', JSON.stringify(entry, null, 2));
+      const original = btn.textContent;
+      btn.disabled = true; btn.textContent = form.dataset.sending || '…';
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd, headers: { Accept: 'application/json' } });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.message);
+        status.dataset.state = 'ok'; status.textContent = form.dataset.ok || 'Thanks!';
+        form.reset();
+        form.querySelectorAll('.field, .check, button, .note').forEach((el) => ((el as HTMLElement).hidden = true));
+      } catch {
+        status.dataset.state = 'err'; status.textContent = form.dataset.err || 'Error';
+      } finally {
+        status.hidden = false; btn.disabled = false; btn.textContent = original;
+      }
+    });
+  }
+</script>
+
+<style>
+  .narrow { width: min(100% - 2 * var(--gutter), 720px); }
+  .card { background: var(--white); border: 2px solid var(--line); border-radius: var(--radius); padding: clamp(20px, 4vw, 36px); }
+  fieldset { border: 0; padding: 0; }
+  .stars { display: inline-flex; flex-direction: row-reverse; gap: 4px; }
+  .stars input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .stars label { font-size: 2.4rem; line-height: 1; color: var(--line); cursor: pointer; transition: color .15s, transform .15s; }
+  .stars label:hover, .stars label:hover ~ label, .stars input:checked ~ label { color: #f2a900; }
+  .stars input:focus-visible + label { outline: 3px solid var(--sun); border-radius: 6px; }
+  .stars label:active { transform: scale(.9); }
+  .note { border-top: 1px solid var(--line); padding-top: 14px; }
+</style>

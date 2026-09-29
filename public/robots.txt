@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://spanishwithmaria.co.uk/sitemap-index.xml

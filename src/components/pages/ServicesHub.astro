@@ -1,0 +1,95 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import CtaBand from '../CtaBand.astro';
+import { photos, alts } from '../../data/photos.js';
+import { t, route, serviceList, alternatesFor } from '../../i18n/content.js';
+import { coreGraph, breadcrumbs, serviceSchema } from '../../lib/schema.js';
+interface Props { lang: 'en' | 'es' | 'it'; }
+const { lang } = Astro.props;
+const S = t[lang].servicesHub;
+const C = t[lang].common;
+const N = t[lang].nav;
+const services = serviceList(lang);
+const crumbs = [{ name: N.home, href: route('home', lang) }, { name: S.h1, href: route('services', lang) }];
+const schema = [...coreGraph(lang), breadcrumbs(crumbs), ...services.map((s) => serviceSchema(s, lang))];
+---
+<Base title={S.title} description={S.desc} lang={lang} alternates={alternatesFor('services')} schema={schema}>
+  <section class="page-hero">
+    <div class="wrap">
+      <Breadcrumbs items={crumbs} />
+      <div class="inner">
+        <p class="hand" lang="es">{S.kicker}</p>
+        <h1>{S.h1}</h1>
+        <p class="lead">{S.lead}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap list">
+      {services.map((s, i) => (
+        <article class:list={['row', { flip: i % 2 === 1 }]} data-reveal>
+          <a href={s.href} class="pic" tabindex="-1" aria-hidden="true">
+            <Picture src={photos[s.photo]} alt="" widths={[480, 720]} sizes="(min-width: 900px) 460px, 92vw" formats={['avif', 'webp']} />
+          </a>
+          <div class="txt">
+            <h2><a href={s.href}>{s.title}</a></h2>
+            <p>{s.short}</p>
+            <p class="meta"><span class="price"><strong>{s.price}</strong> {s.unit}</span></p>
+            <a class="btn btn--ghost" href={s.href}>{C.learnMore}</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section--sky">
+    <div class="wrap">
+      <h2 class="t-h">{S.pricesH}</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">{S.lesson}</th><th scope="col">{S.length}</th><th scope="col">{S.priceCol}</th></tr></thead>
+          <tbody>
+            {services.map((s) => <tr><th scope="row"><a href={s.href}>{s.title}</a></th><td>{s.length}</td><td><strong>{s.price}</strong></td></tr>)}
+          </tbody>
+        </table>
+      </div>
+      <p class="pack"><span class="tag">{C.save}</span> {C.perLessonPack} · {C.trialFree}</p>
+      <div class="unsure">
+        <h3>{S.notSureH}</h3>
+        <p>{S.notSureP}</p>
+        <a class="btn btn--primary" href={route('trial', lang)}>{C.bookTrial}</a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand lang={lang} />
+</Base>
+<style>
+  .list { display: grid; gap: clamp(36px, 6vw, 72px); }
+  .row { display: grid; gap: 20px; align-items: center; }
+  .pic { display: block; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .pic :global(img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .4s ease; }
+  .pic:hover :global(img) { transform: scale(1.03); }
+  .txt { display: grid; gap: 12px; justify-items: start; }
+  .txt h2 { font-size: var(--step-2); }
+  .txt h2 a { color: var(--ink); text-decoration: none; }
+  .txt h2 a:hover { color: var(--teal); }
+  .txt p { color: var(--ink-soft); }
+  .price { display: inline-block; background: var(--sun-soft); border-radius: 999px; padding: 6px 14px; color: var(--ink); }
+  .price strong { font-weight: 800; font-size: 1.15rem; }
+  @media (min-width: 900px) { .row { grid-template-columns: 1fr 1fr; gap: 56px; } .row.flip .pic { order: 2; } }
+  .t-h { font-size: var(--step-2); margin-bottom: 20px; }
+  .table-wrap { overflow-x: auto; background: var(--white); border-radius: var(--radius); }
+  table { width: 100%; border-collapse: collapse; min-width: 480px; }
+  th, td { text-align: left; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+  thead th { font-size: var(--step--1); color: var(--ink-soft); font-weight: 700; }
+  tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+  tbody th a { color: var(--ink); font-weight: 700; }
+  .pack { margin: 16px 0 36px; color: var(--ink-soft); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .tag { background: var(--coral); color: #fff; font-weight: 700; font-size: .85rem; border-radius: 999px; padding: 4px 12px; }
+  .unsure { background: var(--white); border-radius: var(--radius); padding: clamp(22px, 4vw, 36px); display: grid; gap: 12px; justify-items: start; border: 2px dashed var(--sun); }
+  .unsure p { color: var(--ink-soft); }
+</style>

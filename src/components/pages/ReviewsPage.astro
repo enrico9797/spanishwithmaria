@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import Reviews from '../Reviews.astro';
+import CtaBand from '../CtaBand.astro';
+import { t, route, alternatesFor } from '../../i18n/content.js';
+import { coreGraph, breadcrumbs, reviewSchemas } from '../../lib/schema.js';
+interface Props { lang: 'en' | 'es' | 'it'; }
+const { lang } = Astro.props;
+const R = t[lang].reviewsPage;
+const N = t[lang].nav;
+const crumbs = [{ name: N.home, href: route('home', lang) }, { name: N.reviews, href: route('reviews', lang) }];
+const schema = [...coreGraph(lang), breadcrumbs(crumbs), ...reviewSchemas()];
+---
+<Base title={R.title} description={R.desc} lang={lang} alternates={alternatesFor('reviews')} schema={schema}>
+  <section class="page-hero">
+    <div class="wrap">
+      <Breadcrumbs items={crumbs} />
+      <div class="inner">
+        <p class="hand" lang="es">{R.kicker}</p>
+        <h1>{R.h1}</h1>
+        <p class="lead">{R.lead}</p>
+      </div>
+    </div>
+  </section>
+  <Reviews lang={lang} heading={false} grid={true} />
+  <CtaBand lang={lang} />
+</Base>

@@ -1,36 +1,41 @@
 ---
-import { site, services } from '../data/site.js';
+import { site } from '../data/site.js';
+import { t, route, serviceList } from '../i18n/content.js';
 import Logo from './Logo.astro';
+interface Props { lang: 'en' | 'es' | 'it'; }
+const { lang } = Astro.props;
+const F = t[lang].footer;
+const N = t[lang].nav;
 const year = new Date().getFullYear();
 ---
 <footer class="footer">
   <div class="wrap grid">
     <div class="brand">
       <Logo dark />
-      <p>Friendly one-to-one Spanish lessons, online worldwide and in person in London.</p>
+      <p>{F.tagline}</p>
       <p class="contact">
         <a href={`mailto:${site.email}`}>{site.email}</a><br />
         <a href={site.whatsapp} rel="noopener">WhatsApp {site.phone}</a>
       </p>
     </div>
-    <nav aria-label="Lessons">
-      <p class="h">Lessons</p>
-      <ul>{services.map((s) => <li><a href={`/services/${s.slug}/`}>{s.title}</a></li>)}</ul>
+    <nav aria-label={F.lessons}>
+      <p class="h">{F.lessons}</p>
+      <ul>{serviceList(lang).map((s) => <li><a href={s.href}>{s.title}</a></li>)}</ul>
     </nav>
-    <nav aria-label="More">
-      <p class="h">More</p>
+    <nav aria-label={F.more}>
+      <p class="h">{F.more}</p>
       <ul>
-        <li><a href="/about/">About María</a></li>
-        <li><a href="/reviews/">Reviews</a></li>
-        <li><a href="/reviews/write/">Leave a review</a></li>
-        <li><a href="/free-trial/">Free trial lesson</a></li>
-        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href={route('about', lang)}>{N.about}</a></li>
+        <li><a href={route('reviews', lang)}>{N.reviews}</a></li>
+        <li><a href={route('reviewsWrite', lang)}>{F.leave}</a></li>
+        <li><a href={route('trial', lang)}>{N.trial}</a></li>
+        <li><a href="/privacy/">{F.privacy}</a></li>
       </ul>
     </nav>
-    <nav aria-label="Languages">
-      <p class="h">Languages</p>
+    <nav aria-label={F.languages}>
+      <p class="h">{F.languages}</p>
       <ul>
-        <li><a href="/" hreflang="en">English</a></li>
+        <li><a href="/" hreflang="en" lang="en">English</a></li>
         <li><a href="/es/" hreflang="es" lang="es">Español</a></li>
         <li><a href="/it/" hreflang="it" lang="it">Italiano</a></li>
       </ul>

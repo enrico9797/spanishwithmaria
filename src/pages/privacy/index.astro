@@ -1,0 +1,56 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { site } from '../../data/site.js';
+import { breadcrumbs } from '../../lib/schema.js';
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Privacy', href: '/privacy/' }];
+const updated = '29 September 2026';
+---
+<Base title="Privacy Policy | Spanish with María" description="How Spanish with María collects, uses and protects your personal information." schema={[breadcrumbs(crumbs)]}>
+  <section class="page-hero">
+    <div class="wrap narrow">
+      <Breadcrumbs items={crumbs} />
+      <div class="inner"><h1>Privacy policy</h1><p class="muted">Last updated: {updated}</p></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap narrow prose">
+      <h2>Who we are</h2>
+      <p>This website is run by {site.teacher}, trading as Spanish with María, a self-employed Spanish tutor. For anything about your personal information, email <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+
+      <h2>What we collect and why</h2>
+      <ul>
+        <li><strong>Contact and enquiry forms:</strong> your name, email, optional phone number and message, so María can reply to you.</li>
+        <li><strong>Trial lesson bookings:</strong> your name, email, what you would like to learn and your level, so María can prepare and hold the lesson.</li>
+        <li><strong>Reviews:</strong> your name as you choose to show it, your rating, review and what you learned. We publish these only with your consent. Your email is never published; María may use it to confirm you were her student.</li>
+      </ul>
+      <p>Our lawful bases are your consent (reviews) and taking steps at your request before providing lessons (enquiries and bookings).</p>
+
+      <h2>Services we use</h2>
+      <ul>
+        <li><strong>Web3Forms</strong> delivers form messages to our inbox.</li>
+        <li><strong>Cal.com</strong> handles trial lesson bookings and sends confirmation emails. It may set cookies needed for the booking calendar to work.</li>
+        <li><strong>Google (Gmail and Google Calendar)</strong> stores our emails and appointments.</li>
+        <li><strong>Cloudflare</strong> hosts this website and handles our email forwarding.</li>
+      </ul>
+      <p>Some of these providers may process data outside the UK, with appropriate safeguards in place.</p>
+
+      <h2>Cookies and tracking</h2>
+      <p>This website does not use advertising or analytics cookies. Fonts are hosted on our own site, so no data is sent to font providers. The booking calendar from Cal.com may use essential cookies.</p>
+
+      <h2>How long we keep it</h2>
+      <p>Enquiries are kept for up to 12 months. Student contact details are kept while you are having lessons and for up to 12 months afterwards. Published reviews stay on the site until you ask us to remove them.</p>
+
+      <h2>Your rights</h2>
+      <p>You can ask to see, correct or delete your personal information, or withdraw your consent for a review, at any time by emailing <a href={`mailto:${site.email}`}>{site.email}</a>. If you are unhappy with how we handle your data, you can complain to the Information Commissioner’s Office (ico.org.uk).</p>
+    </div>
+  </section>
+</Base>
+<style>
+  .narrow { width: min(100% - 2 * var(--gutter), 760px); }
+  .prose { display: grid; gap: 14px; }
+  .prose h2 { font-size: var(--step-1); margin-top: 18px; }
+  .prose ul { padding-left: 20px; display: grid; gap: 8px; }
+  .prose p, .prose li { color: var(--ink-soft); }
+  .prose strong { color: var(--ink); }
+</style>

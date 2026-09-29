@@ -13,8 +13,9 @@ interface Props {
   alternates?: Partial<Record<'en' | 'es' | 'it', string>>;
   schema?: object[];
   ogImage?: string;
+  noindex?: boolean;
 }
-const { title, description, lang = 'en', alternates = {}, schema = [], ogImage = '/og-default.jpg' } = Astro.props;
+const { title, description, lang = 'en', alternates = {}, schema = [], ogImage = '/og-default.jpg', noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 const langs = { en: 'en', es: 'es', it: 'it' } as const;
 const alt = { [lang]: Astro.url.pathname, ...alternates };
@@ -27,6 +28,7 @@ const alt = { [lang]: Astro.url.pathname, ...alternates };
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex" />}
   {Object.entries(alt).map(([l, path]) => (
     <link rel="alternate" hreflang={langs[l as keyof typeof langs]} href={new URL(path!, site.url).href} />
   ))}
@@ -47,13 +49,13 @@ const alt = { [lang]: Astro.url.pathname, ...alternates };
   <script is:inline>document.documentElement.classList.add('js');</script>
 </head>
 <body>
-  <a class="skip" href="#main">Skip to content</a>
+  <a class="skip" href="#main">{lang === 'es' ? 'Ir al contenido' : lang === 'it' ? 'Vai al contenuto' : 'Skip to content'}</a>
   <Header lang={lang} alternates={alt} />
   <main id="main">
     <slot />
   </main>
-  <Footer />
-  <MobileBar />
+  <Footer lang={lang} />
+  <MobileBar lang={lang} />
   <script>
     // One IntersectionObserver for gentle scroll reveals
     const els = document.querySelectorAll('[data-reveal]');

@@ -1,0 +1,19 @@
+---
+// Visible breadcrumb trail (schema is added by the page via lib/schema.js)
+interface Props { items: { name: string; href: string }[]; }
+const { items } = Astro.props;
+---
+<nav class="crumbs" aria-label="Breadcrumb">
+  <ol>
+    {items.map((it, i) => (
+      <li>{i < items.length - 1 ? <a href={it.href}>{it.name}</a> : <span aria-current="page">{it.name}</span>}</li>
+    ))}
+  </ol>
+</nav>
+<style>
+  .crumbs ol { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; font-size: var(--step--1); color: var(--ink-soft); }
+  .crumbs li:not(:last-child)::after { content: '›'; margin-left: 6px; color: var(--ink-soft); }
+  .crumbs a { color: var(--ink-soft); }
+  .crumbs a:hover { color: var(--teal); }
+  .crumbs span { color: var(--ink); font-weight: 600; }
+</style>
