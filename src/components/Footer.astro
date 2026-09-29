@@ -1,11 +1,12 @@
 ---
 import { site, services } from '../data/site.js';
+import Logo from './Logo.astro';
 const year = new Date().getFullYear();
 ---
 <footer class="footer">
   <div class="wrap grid">
     <div class="brand">
-      <p class="name">Spanish <em>with</em> María</p>
+      <Logo dark />
       <p>Friendly one-to-one Spanish lessons, online worldwide and in person in London.</p>
       <p class="contact">
         <a href={`mailto:${site.email}`}>{site.email}</a><br />
@@ -38,13 +39,11 @@ const year = new Date().getFullYear();
   <div class="wrap small">© {year} Spanish with María · {site.teacher}</div>
 </footer>
 <style>
-  .footer { background: var(--teal-deep); color: #cfe3e6; padding: 64px 0 28px; }
+  .footer { background: var(--teal-dark); color: #d4e7ea; padding: 64px 0 28px; }
   .footer a { color: #fff; text-decoration: none; }
   .footer a:hover { text-decoration: underline; color: #fff; }
   .grid { display: grid; gap: 36px; grid-template-columns: 1fr 1fr; }
   .brand { grid-column: 1 / -1; display: grid; gap: 12px; }
-  .name { font: 600 1.6rem/1 var(--serif); color: #fff; font-variation-settings: 'SOFT' 100; }
-  .name em { color: var(--saffron); font-weight: 400; }
   .h { font-weight: 700; color: #fff; margin-bottom: 10px; }
   ul { list-style: none; padding: 0; display: grid; gap: 8px; }
   .small { margin-top: 48px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.12); font-size: var(--step--1); }

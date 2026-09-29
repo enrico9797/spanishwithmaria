@@ -31,7 +31,7 @@ const alt = { [lang]: Astro.url.pathname, ...alternates };
     <link rel="alternate" hreflang={langs[l as keyof typeof langs]} href={new URL(path!, site.url).href} />
   ))}
   {alt.en && <link rel="alternate" hreflang="x-default" href={new URL(alt.en, site.url).href} />}
-  <meta name="theme-color" content="#0f4c5c" />
+  <meta name="theme-color" content="#16697a" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content={site.name} />
@@ -69,7 +69,7 @@ const alt = { [lang]: Astro.url.pathname, ...alternates };
   <style>
     .skip { position: absolute; left: -999px; top: 8px; background: var(--white); padding: 10px 16px; border-radius: 8px; z-index: 100; }
     .skip:focus { left: 8px; }
-    body { padding-bottom: 76px; background: var(--teal-deep); }
+    body { padding-bottom: 76px; background: var(--teal-dark); }
     main { background: var(--white); }
     @media (min-width: 900px) { body { padding-bottom: 0; } }
   </style>

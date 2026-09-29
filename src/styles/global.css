@@ -1,33 +1,33 @@
-@import '@fontsource-variable/fraunces/full.css';
 @import '@fontsource-variable/figtree';
+@import '@fontsource/caveat/700.css';
 
 :root {
-  /* Palette: carried over from María's Facebook ads for brand continuity */
-  --ink: #10343e;
-  --ink-soft: #3f6670;
-  --teal: #0f4c5c;
-  --teal-deep: #0a3643;
-  --mist: #eef3f4;
-  --mist-2: #e1eaec;
+  /* Warm, friendly palette – teal kept for continuity with the Facebook ads */
+  --ink: #1f3940;
+  --ink-soft: #4c6a71;
+  --teal: #16697a;
+  --teal-dark: #0f4c5c;
+  --sky: #e8f4f6;
+  --sun: #ffcf5c;
+  --sun-soft: #fff6dc;
+  --coral: #ef6f5e;
+  --line: #e6eeef;
   --white: #ffffff;
-  --red: #c8102e;       /* "teacher's red pen" – used sparingly */
-  --saffron: #f2b134;   /* small highlights: stars, dots */
 
-  --serif: 'Fraunces Variable', Georgia, serif;
   --sans: 'Figtree Variable', system-ui, sans-serif;
+  --hand: 'Caveat', 'Comic Sans MS', cursive;
 
-  --step--1: clamp(0.875rem, 0.85rem + 0.1vw, 0.94rem);
+  --step--1: clamp(0.9rem, 0.87rem + 0.1vw, 0.97rem);
   --step-0: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
-  --step-1: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
-  --step-2: clamp(1.6rem, 1.4rem + 1vw, 2.1rem);
-  --step-3: clamp(2.1rem, 1.7rem + 2vw, 3.2rem);
-  --step-4: clamp(2.6rem, 2rem + 3.2vw, 4.4rem);
+  --step-1: clamp(1.2rem, 1.1rem + 0.5vw, 1.45rem);
+  --step-2: clamp(1.5rem, 1.35rem + 0.8vw, 1.95rem);
+  --step-3: clamp(1.9rem, 1.6rem + 1.6vw, 2.8rem);
+  --step-4: clamp(2.4rem, 1.9rem + 2.8vw, 4rem);
 
   --gutter: 20px;
   --max: 1160px;
-  --radius: 18px;
-  --arch: 999px 999px 22px 22px;
-  --shadow: 0 18px 40px -18px rgba(15, 76, 92, 0.35);
+  --radius: 24px;
+  --shadow: 0 16px 36px -20px rgba(22, 105, 122, 0.45);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -43,47 +43,42 @@ body {
 }
 img, picture, svg { display: block; max-width: 100%; height: auto; }
 a { color: var(--teal); text-underline-offset: 3px; }
-a:hover { color: var(--teal-deep); }
-:focus-visible { outline: 3px solid var(--saffron); outline-offset: 3px; border-radius: 6px; }
+a:hover { color: var(--teal-dark); }
+:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; border-radius: 8px; }
 
-h1, h2, h3 {
-  font-family: var(--serif);
-  font-variation-settings: 'SOFT' 100, 'WONK' 0;
-  font-weight: 600;
-  line-height: 1.08;
-  letter-spacing: -0.01em;
-  color: var(--teal-deep);
-  text-wrap: balance;
-}
+h1, h2, h3 { font-family: var(--sans); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); text-wrap: balance; }
 h1 { font-size: var(--step-4); }
 h2 { font-size: var(--step-3); }
-h3 { font-size: var(--step-1); line-height: 1.25; }
+h3 { font-size: var(--step-1); line-height: 1.25; font-weight: 750; }
 p { text-wrap: pretty; max-width: 62ch; }
 
 .wrap { width: min(100% - 2 * var(--gutter), var(--max)); margin-inline: auto; }
-.section { padding-block: clamp(56px, 8vw, 110px); }
-.section--mist { background: var(--mist); }
+.section { padding-block: clamp(56px, 8vw, 104px); }
+.section--sun { background: var(--sun-soft); }
+.section--sky { background: var(--sky); }
 .lead { font-size: var(--step-1); line-height: 1.5; color: var(--ink-soft); }
 .muted { color: var(--ink-soft); }
-.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.hand { font-family: var(--hand); font-weight: 700; line-height: 1; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   min-height: 52px; padding: 0 26px; border-radius: 999px;
-  font: 600 1rem/1 var(--sans); text-decoration: none; cursor: pointer; border: 2px solid transparent;
+  font: 700 1rem/1 var(--sans); text-decoration: none; cursor: pointer; border: 2px solid transparent;
   transition: transform .15s ease, background-color .15s ease, box-shadow .15s ease;
 }
-.btn:active { transform: scale(.98); }
+.btn:active { transform: scale(.97); }
 .btn--primary { background: var(--teal); color: var(--white); box-shadow: var(--shadow); }
-.btn--primary:hover { background: var(--teal-deep); color: var(--white); }
-.btn--ghost { border-color: var(--teal); color: var(--teal); background: transparent; }
-.btn--ghost:hover { background: var(--mist); }
+.btn--primary:hover { background: var(--teal-dark); color: var(--white); transform: translateY(-1px); }
+.btn--ghost { border-color: var(--teal); color: var(--teal); background: var(--white); }
+.btn--ghost:hover { background: var(--sky); }
+.btn--sun { background: var(--sun); color: var(--ink); }
+.btn--sun:hover { background: #ffc23a; color: var(--ink); }
 
-.section-head { display: grid; gap: 14px; margin-bottom: clamp(28px, 5vw, 52px); }
+.section-head { display: grid; gap: 12px; margin-bottom: clamp(28px, 5vw, 48px); }
 .section-head p { color: var(--ink-soft); }
+.section-head .hand { font-size: 2.1rem; color: var(--coral); }
 
-/* Scroll reveal – only when JS runs and motion is allowed */
 @media (prefers-reduced-motion: no-preference) {
-  .js [data-reveal] { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+  .js [data-reveal] { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
   .js [data-reveal].is-in { opacity: 1; transform: none; }
 }

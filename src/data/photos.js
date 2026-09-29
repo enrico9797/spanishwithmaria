@@ -5,7 +5,7 @@ import online from '../assets/photos/maria-online-lesson.jpg';
 import conversation from '../assets/photos/maria-conversation-lesson.jpg';
 import grammar from '../assets/photos/maria-grammar-lesson.jpg';
 import cooking from '../assets/photos/maria-cooking-ceviche.jpg';
-import children from '../assets/photos/maria-children-birthday.jpg';
+import children from '../assets/photos/maria-children-lesson.jpg';
 import realWindow from '../assets/photos/maria-real-window.jpg';
 import peru from '../assets/photos/maria-peruvian-restaurant.jpg';
 import rome from '../assets/photos/maria-rome.jpg';
@@ -25,7 +25,7 @@ export const alts = {
   conversation: 'María chatting in Spanish with a student at the table',
   grammar: 'María explaining Spanish grammar from a textbook',
   inperson: 'María giving a Spanish lesson at a student’s kitchen table',
-  children: 'María celebrating a birthday with two of the children she looked after',
+  children: 'María clapping and laughing with two young children during a Spanish lesson at the table',
   cooking: 'María preparing Peruvian ceviche in her kitchen',
   realWindow: 'María smiling by a window',
   peru: 'María at a Peruvian restaurant under the Peruvian flag',

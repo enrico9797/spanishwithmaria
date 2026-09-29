@@ -5,9 +5,10 @@ import reviews from '../data/reviews.json';
 interface Review { name: string; context: string; rating: number; text: string; date: string; }
 const list = reviews as Review[];
 ---
-<section class="section section--mist" id="reviews" aria-labelledby="reviews-h">
+<section class="section section--sun" id="reviews" aria-labelledby="reviews-h">
   <div class="wrap">
     <div class="section-head">
+      <p class="hand">Opiniones</p>
       <h2 id="reviews-h">What students say</h2>
     </div>
     {list.length === 0 ? (
@@ -30,11 +31,11 @@ const list = reviews as Review[];
   </div>
 </section>
 <style>
-  .empty { display: grid; gap: 16px; justify-items: start; background: var(--white); border-radius: var(--radius); padding: clamp(24px, 5vw, 44px); border-left: 6px solid var(--saffron); }
-  .big { font: 500 var(--step-1)/1.4 var(--serif); color: var(--teal-deep); }
+  .empty { display: grid; gap: 16px; justify-items: start; background: var(--white); border-radius: var(--radius); padding: clamp(24px, 5vw, 44px); border: 2px dashed var(--sun); }
+  .big { font: 700 var(--step-1)/1.4 var(--sans); color: var(--ink); }
   .track { display: grid; grid-auto-flow: column; grid-auto-columns: min(86%, 380px); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; }
   .card { scroll-snap-align: start; background: var(--white); border-radius: var(--radius); padding: 26px; display: grid; gap: 14px; align-content: start; }
-  .stars { color: var(--saffron); letter-spacing: 2px; }
+  .stars { color: #f2a900; letter-spacing: 2px; }
   figcaption { display: grid; font-size: var(--step--1); }
   figcaption span { color: var(--ink-soft); }
 </style>

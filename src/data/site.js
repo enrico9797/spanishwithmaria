@@ -6,8 +6,8 @@ export const site = {
   email: 'hola@spanishwithmaria.co.uk',
   phone: '+44 7522 534677',
   whatsapp: 'https://wa.me/447522534677',
-  calLink: 'maria-mercedes-egusquiza-perea-dps5mm/free-trial',
-  calUrl: 'https://cal.com/maria-mercedes-egusquiza-perea-dps5mm/free-trial',
+  calLink: 'spanishwithmaria/free-trial',
+  calUrl: 'https://cal.com/spanishwithmaria/free-trial',
   // Web3Forms keys are public by design (they only allow sending to the registered inbox).
   web3formsKey: '6d3b7e52-8b73-40a3-9072-c832bbe6c66c',
   area: 'West London',
